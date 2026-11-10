@@ -1,0 +1,28 @@
+{
+  "run_id": "20261110T093444Z",
+  "model": "Qwen3-4B-AWQ",
+  "base_url": "http://127.0.0.1:8123/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 1,
+  "elapsed_s": 44.7,
+  "prefix_cache_hit_rate": null,
+  "trace_file": "/tmp/run-20261110T093444Z.jsonl",
+  "results": [
+    {
+      "task_id": "adv-05",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [],
+      "llm_calls": 2,
+      "prompt_tokens": 1412,
+      "completion_tokens": 1485,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "输出被 max_tokens=2048 截断且无工具调用（思考未闭合，finish_reason=length）",
+      "error_type": "orchestration_error",
+      "wall_ms": 44652.8
+    }
+  ]
+}

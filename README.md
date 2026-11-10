@@ -125,8 +125,11 @@ orchestration_error → 包进 `ToolError` 回灌自纠（`TestDispatchSyntaxErr
 - **结论**：这是 4B 模型对「禁心算」指令遵循的能力边界，不是 harness 缺陷；
   门禁的归因与守卫把失败定位到了确切一步（哪一轮、什么 finish_reason、
   工具报错文本是什么）——修复闭环的价值在这里是**把「跑不过」变成可解释、
-  可复现、带证据链的失败**，而不是硬把它变绿。网关后端同一题 ×3 全过，
-  对照进一步支持是模型能力而非任务缺陷。
+  可复现、带证据链的失败**，而不是硬把它变绿。网关后端同一题 ×3 全过
+  （results/hard-x3/），对照进一步支持是模型能力而非任务缺陷。
+  三臂证据已落盘 `results/failure-loop/`（结果 JSON + 对应 trace），复现：
+  `ARMS="baseline armA armB" bash run_failure_arms.sh`（需本地 vLLM 服务；
+  脚本尾部的断言会在任一臂通过时报错，防止负结果陈述过期）。
 
 ### audit 工具集（evalkit × tmaudit，2026-11-10）
 
