@@ -145,15 +145,23 @@ python3 run_agent.py --all --toolset audit --tasks-file evals/tasks-audit.jsonl 
 python3 run_eval.py --replay results/run-audit-gw1.json --tasks-file evals/tasks-audit.jsonl --gate 0.80
 ```
 
-### prefix-cache 命中率（L3 最小件）
+### prefix-cache 命中率（L3 最小件 + 一个上游 bug）
 
 `--metrics-url http://127.0.0.1:8123/metrics` 在 run 前后抓
 `vllm:prefix_cache_{queries,hits}_total` 差值算命中率（`evalkit/metrics.py`，
 单元测试覆盖解析、整词匹配防 `_created` 误读、差值除零守卫）。
-实测读数：单题冒烟时计数器为 0（窗口内零查询 → 守卫记 null，不编 0）；
 全量 36 题实测 **0.9178**（run-local6）——系统提示词 + 任务前缀被 KV cache
-大量复用，这是顺序评测能省 prefill 的量化证据。两次读数都真实，
-差别写明不猜原因。
+大量复用，这是顺序评测能省 prefill 的量化证据。
+
+跟踪时曾把「单题冒烟计数器为 0」归因为 V1 引擎计数器未接线——**归因错误**：
+当时本地服务确实零流量（之前的 40+ 请求全部打到了网关），0 是正确读数，
+两次读数的差异是流量去向不是计数器。干净复现（fresh 服务 + 逐次请求）发现
+更大的问题：**字节相同的连续 prompt 也永不命中**（queries 增长、hits 恒 0，
+`/v1/completions` 与 `/v1/chat/completions` 皆然），已排除 spec
+`prefix_cacheable` 与 fine-grained 禁用告警两条路径；怀疑与 0.33 新引入的
+LBNHC KV cache layout 有关，已报上游
+[vllm#66786](https://github.com/vllm-project/vllm/issues/66786)。
+评测读数 0.9178 与 bug 不冲突（评测 run 的多任务共享系统提示词前缀确实命中）。
 
 ### v1 评测集（24 题，2026-11-09，`--max-tokens 512`，已归档 `results/v1-24q/`）
 
