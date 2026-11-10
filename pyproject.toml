@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-evalkit"
+version = "0.1.0"
+description = "Deterministic eval harness for tool-calling LLM agents: task sets, JSONL traces, failure attribution, fail-closed gates"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Liu Zewen" }]
+keywords = ["llm", "agent", "evaluation", "tool-calling", "trace", "gate"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Testing",
+]
+# 零第三方依赖：纯 Python 标准库
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/aidless/agent-evalkit"
+Issues = "https://github.com/aidless/agent-evalkit/issues"
+
+[tool.setuptools]
+packages = ["evalkit"]

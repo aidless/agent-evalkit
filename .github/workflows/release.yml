@@ -1,0 +1,44 @@
+name: Release (build + twine check + publish)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - name: Build sdist + wheel
+        run: python -m build
+      - name: Twine check
+        run: twine check dist/*
+      - name: Smoke-test the wheel
+        run: |
+          pip install dist/*.whl
+          python -c "from evalkit.tools import dispatch, TOOL_SCHEMAS; from evalkit.grade import evaluate_gate; print('tools:', len(TOOL_SCHEMAS), 'schemas')"
+          python -m unittest discover -s tests 2>&1 | tail -2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build-check
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # PyPI Trusted Publishing（OIDC，无需 token）
+    environment: pypi
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
