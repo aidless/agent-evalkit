@@ -266,6 +266,9 @@ evals/
 run_agent.py      跑单题/全部 → traces + results/latest.json
 run_eval.py       回放评分 + --gate 门禁 + --selftest
 trace_summary.py  聚合：延迟分位/token/工具分布/轮次/冗余调用 + 评分对账
+trace_timeline.py 单文件 HTML 时间线（每任务一泳道，蓝条宽=LLM latency、
+                  红线=error；零依赖，浏览器直开）：
+                  python3 trace_timeline.py traces/run-*.jsonl --out docs/trace-timeline.html
 aggregate_runs.py 多次运行的通过率 mean/sd + 延迟分位汇总
 tests/            22 个单测（工具/评分器/trace 指标/自检分母）
 ```
