@@ -67,9 +67,9 @@ python3 run_eval.py --selftest
 难题（跨量纲/缺键/错键自纠/两步链/边界值/格式遵循/抗干扰长 prompt），
 两个后端立刻分开，而且失败模式完全不同：
 
-| 后端（`--max-tokens 2048`，温度 0） | 通过率 ×4 | mean±sd | LLM 延迟 p50 / p95 / p99 | 平均轮次 | token/次 | 全量耗时 | prefix-cache 命中率 |
+| 后端（`--max-tokens 2048`，温度 0） | 通过率 ×5 | mean±sd | LLM 延迟 p50 / p95 / p99 | 平均轮次 | token/次 | 全量耗时 | prefix-cache 命中率 |
 |---|---|---|---|---|---|---|---|
-| `opencode-go/deepseek-v4.1-flash`（网关） | 0.9444 / 1.0000 / 0.9444 / 0.9444 | **0.9583 ± 0.0241** | 1572 / 2881 / 4949 ms | 2.62 | 71004 | ~160 s | —（无 /metrics） |
+| `opencode-go/deepseek-v4.1-flash`（网关） | 0.9444 / 1.0000 / 0.9444 / 0.9444 / 1.0000 | **0.9666 ± 0.0272** | 1583 / 2986 / 5473 ms | 2.60 | 70344 | ~170 s | —（无 /metrics） |
 | `Qwen3-4B-AWQ`（本机 3060，vLLM 0.33 + hermes parser） | 0.9722 ×4 | **0.9722 ± 0.0000** | 6663 / 17756 / 32597 ms | 2.08 | 72068 | ~590 s | **0.9178**（run-local6 实测） |
 
 - **区分度结论**：v1 的 24/24=1.0 是评测集天花板太低；v2 让两个后端都 <1.0，
@@ -143,6 +143,20 @@ p50=2245 / p99=8399 ms。trace 纪律同样生效：audit-01 单题内出现 10 
 ```bash
 python3 run_agent.py --all --toolset audit --tasks-file evals/tasks-audit.jsonl --max-tokens 2048
 python3 run_eval.py --replay results/run-audit-gw1.json --tasks-file evals/tasks-audit.jsonl --gate 0.80
+```
+
+### mock-LLM 回放后端（harness 可测试性）
+
+`--replay-trace <trace.jsonl>` 从轨迹重放 LLM 调用（`evalkit/replay.py`），
+**不调任何模型**即可端到端跑通 run_agent → run_eval → trace_summary：
+工具分派、错误回灌、截断守卫、评分全链在无 LLM、无 GPU 环境可验证。
+确定性验收：网关 gw7（36/36 满分）重放后逐题一致（0 mismatch），
+证据 `results/replay-demo/`（原 run + trace + replay run）。
+trace 相应升级：`llm_call` 事件新增 `tool_calls_full`（id/name/arguments 全量），
+旧 trace 无该字段时重放明确报错而不是静默失败。
+```bash
+python3 run_agent.py --all --replay-trace results/replay-demo/trace-gw7-evidence.jsonl
+python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json --gate 0.80
 ```
 
 ### prefix-cache 命中率（L3 最小件 + 一个上游 bug）

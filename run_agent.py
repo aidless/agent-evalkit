@@ -41,6 +41,8 @@ def main() -> int:
                     help="单次 LLM 调用的输出上限；思考型模型要调大防止截断（512 只够无思考模型）")
     ap.add_argument("--max-turns", type=int, default=6)
     ap.add_argument("--timeout", type=float, default=60.0)
+    ap.add_argument("--replay-trace", default="",
+                    help="回放模式：从 trace JSONL 重放 LLM 调用（离线，无 LLM）")
     ap.add_argument("--toolset", default="tools", choices=["tools", "audit"],
                     help="tools=calc/lookup/convert；audit=tmaudit C1-C10 规则语义查询（配 evals/tasks-audit.jsonl）")
     ap.add_argument("--tasks-file", default=str(ROOT / "evals" / "tasks.jsonl"),
@@ -69,8 +71,14 @@ def main() -> int:
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     trace_path = Path(args.traces_dir) / f"run-{ts}.jsonl"
+    llm_fn = None
+    if args.replay_trace:
+        from evalkit.replay import ReplayLLM
+        llm_fn = ReplayLLM(args.replay_trace)
+
     agent = Agent(toolset=args.toolset, model=args.model, base_url=args.base_url, api_key=args.api_key,
-                  max_turns=args.max_turns, timeout=args.timeout, max_tokens=args.max_tokens)
+                  max_turns=args.max_turns, timeout=args.timeout, max_tokens=args.max_tokens,
+                  llm_fn=llm_fn)
 
     results = []
     started = time.time()

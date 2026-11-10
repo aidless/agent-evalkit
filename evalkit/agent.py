@@ -75,6 +75,7 @@ class Agent:
         max_tokens: int = 512,
         max_retries: int = 3,
         toolset: str = "tools",
+        llm_fn=None,
     ):
         self.model = model
         self.base_url = base_url
@@ -85,6 +86,7 @@ class Agent:
         self.max_retries = max_retries
         self.toolset = toolset
         self._schemas, self._dispatch = _toolset(toolset)
+        self._llm_fn = llm_fn if llm_fn is not None else chat_completions
 
     def run(self, task: dict, trace: TraceWriter) -> TaskResult:
         result = TaskResult(task_id=task["id"], ok=False)
@@ -96,9 +98,11 @@ class Agent:
         latencies: list[float] = []
 
         try:
+            if hasattr(self._llm_fn, "set_task"):
+                self._llm_fn.set_task(task["id"])
             for turn in range(1, self.max_turns + 1):
                 result.turns = turn
-                llm = chat_completions(
+                llm = self._llm_fn(
                     messages=messages,
                     tools=self._schemas,
                     model=self.model,
@@ -126,6 +130,11 @@ class Agent:
                     cost=llm.cost,
                     finish_reason=llm.finish_reason,
                     tool_calls=[tc["function"]["name"] for tc in (llm.message.get("tool_calls") or [])],
+                    tool_calls_full=[
+                        {"id": tc.get("id"),
+                         "name": tc["function"]["name"],
+                         "arguments": tc["function"]["arguments"]}
+                        for tc in (llm.message.get("tool_calls") or [])],
                     content=(llm.message.get("content") or "")[:300],
                 )
 

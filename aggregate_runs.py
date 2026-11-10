@@ -16,7 +16,10 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main() -> int:
-    argv = [a for a in sys.argv[1:] if a != "--tasks-file"]
+    argv = sys.argv[1:]
+    if "--tasks-file" in argv:
+        i = argv.index("--tasks-file")
+        argv = argv[:i] + argv[i + 2:]  # 剔除 flag 与其取值
     tasks_file = None
     if "--tasks-file" in sys.argv:
         tasks_file = sys.argv[sys.argv.index("--tasks-file") + 1]
