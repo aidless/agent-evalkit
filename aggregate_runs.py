@@ -16,12 +16,16 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main() -> int:
-    pattern = sys.argv[1] if len(sys.argv) > 1 else str(ROOT / "results" / "run-*.json")
-    files = sorted(glob.glob(pattern))
+    argv = [a for a in sys.argv[1:] if a != "--tasks-file"]
+    tasks_file = None
+    if "--tasks-file" in sys.argv:
+        tasks_file = sys.argv[sys.argv.index("--tasks-file") + 1]
+    files = sorted({fp for arg in argv for fp in (glob.glob(arg) or [arg])})
+    pattern = argv[0] if argv else str(ROOT / "results" / "run-*.json")
     if not files:
         print("没有找到 run-*.json", file=sys.stderr)
         return 2
-    tasks = load_tasks()
+    tasks = load_tasks(tasks_file)
     rates, latencies, turns, tokens = [], [], [], []
     print("run                           pass_rate  passed/total  p50(ms)  p99(ms)  avg_turns  tokens")
     for fp in files:

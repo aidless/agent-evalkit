@@ -1,0 +1,10 @@
+{"id": "audit-01", "prompt": "投稿自查：论文摘要里用了符号 R 但从未定义。按 tmaudit 的十类检查，这属于哪条规则？只回答规则 id（如 C7）。", "expected_answer": "C1", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-02", "prompt": "投稿自查：摘要里报了 p=0.03 但没有配对样本量 n 和检验名。按 tmaudit 这属于哪条规则？只回答规则 id。", "expected_answer": "C5", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-03", "prompt": "投稿自查：正文 \\cite{smith2020} 在 refs.bib 里找不到条目。按 tmaudit 这属于哪条规则、该检查的证据层级是什么？按「id 空格 层级」的顺序回答（如 C7 PARTIAL）。", "expected_answer": "C4 CONFIRMED", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-04", "prompt": "查询 tmaudit 的严重级词表和证据三态：未分类的检测器默认落在哪个证据层级？只回答层级名（全大写）。", "expected_answer": "UNSUBSTANTIATED", "required_tools": ["audit_severities"], "category": "audit"}
+{"id": "audit-05", "prompt": "投稿自查：图 3 缺少 caption。按 tmaudit 这属于哪条规则？只回答规则 id。", "expected_answer": "C9", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-06", "prompt": "查询 tmaudit 的 C7 规则：ceremonial 引用默认允许几条静默不报？只回答数字。", "expected_answer": "2", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-07", "prompt": "tmaudit 的十类检查里，哪两类的证据层级是 CONFIRMED（确定性判据，无代理步骤）？按 id 升序、逗号分隔回答（如 C1,C2）。", "expected_answer": "C4,C8", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-08", "prompt": "查询 tmaudit 严重级词表：合法的严重级一共有哪三个？按 HIGH、MEDIUM、LOW 的顺序逗号分隔回答。", "expected_answer": "HIGH,MEDIUM,LOW", "required_tools": ["audit_severities"], "category": "audit"}
+{"id": "audit-09", "prompt": "投稿自查：审稿人要求替换正文里的「明显地」等套话。按 tmaudit 这属于哪条规则、默认严重级是什么？按「id 空格 级别」的顺序回答（如 C7 MEDIUM）。", "expected_answer": "C6 LOW", "required_tools": ["audit_rule"], "category": "audit"}
+{"id": "audit-10", "prompt": "投稿自查：表 3 的 Bonferroni 校正数与声明的比较族数对不上。按 tmaudit 这属于哪条规则、该检查的证据层级是什么？按「id 空格 层级」的顺序回答（如 C7 PARTIAL）。", "expected_answer": "C2 PARTIAL", "required_tools": ["audit_rule"], "category": "audit"}

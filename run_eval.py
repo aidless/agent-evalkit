@@ -15,12 +15,12 @@ from run_agent import load_tasks
 ROOT = Path(__file__).resolve().parent
 
 
-def build_report(run: dict) -> dict:
-    tasks = load_tasks()
+def build_report(run: dict, tasks_file=None) -> dict:
+    tasks = load_tasks(tasks_file or (ROOT / "evals" / "tasks.jsonl"))
     report = grade_all(tasks, run["results"])
     report["run_id"] = run.get("run_id")
     report["model"] = run.get("model")
-    report["eval_tasks_file"] = str(ROOT / "evals" / "tasks.jsonl")
+    report["eval_tasks_file"] = str(tasks_file or (ROOT / "evals" / "tasks.jsonl"))
     return report
 
 
@@ -74,6 +74,8 @@ def main() -> int:
     ap.add_argument("--gate", type=float, default=0.80, help="通过率阈值，低于即 exit 1")
     ap.add_argument("--selftest", action="store_true", help="门禁自检（RED→GREEN）")
     ap.add_argument("--json-out", help="把评分报告写到该 JSON 文件")
+    ap.add_argument("--tasks-file", default=str(ROOT / "evals" / "tasks.jsonl"),
+                    help="任务集路径；audit 任务集配 evals/tasks-audit.jsonl")
     args = ap.parse_args()
 
     if args.selftest:
@@ -85,7 +87,7 @@ def main() -> int:
         return 2
     try:
         run = json.loads(replay.read_text(encoding="utf-8"))
-        report = build_report(run)
+        report = build_report(run, args.tasks_file)
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
         print(f"结果文件损坏，无法评分: {exc}", file=sys.stderr)
         return 2

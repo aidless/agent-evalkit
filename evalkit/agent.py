@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass, field
 
 from .llm import LLMError, chat_completions
-from .tools import TOOL_SCHEMAS, ToolError, dispatch
+from .tools import ToolError
 from .trace import TraceWriter
 
 SYSTEM_PROMPT = (
@@ -52,6 +52,17 @@ class TaskResult:
     error_type: str | None = None
 
 
+def _toolset(toolset: str):
+    """按名选工具集：tools=计算/换算/查语料；audit=tmaudit 规则语义查询。"""
+    if toolset == "tools":
+        from .tools import TOOL_SCHEMAS, dispatch
+        return TOOL_SCHEMAS, dispatch
+    if toolset == "audit":
+        from .audit_tools import AUDIT_SCHEMAS, dispatch_audit
+        return AUDIT_SCHEMAS, dispatch_audit
+    raise ValueError(f"未知工具集 {toolset!r}；可用: tools, audit")
+
+
 class Agent:
     def __init__(
         self,
@@ -63,6 +74,7 @@ class Agent:
         timeout: float = 60.0,
         max_tokens: int = 512,
         max_retries: int = 3,
+        toolset: str = "tools",
     ):
         self.model = model
         self.base_url = base_url
@@ -71,6 +83,8 @@ class Agent:
         self.max_tokens = max_tokens
         self.timeout = timeout
         self.max_retries = max_retries
+        self.toolset = toolset
+        self._schemas, self._dispatch = _toolset(toolset)
 
     def run(self, task: dict, trace: TraceWriter) -> TaskResult:
         result = TaskResult(task_id=task["id"], ok=False)
@@ -86,7 +100,7 @@ class Agent:
                 result.turns = turn
                 llm = chat_completions(
                     messages=messages,
-                    tools=TOOL_SCHEMAS,
+                    tools=self._schemas,
                     model=self.model,
                     base_url=self.base_url,
                     api_key=self.api_key,
@@ -156,7 +170,7 @@ class Agent:
                     trace.emit(task_id=task["id"], event="tool_call", turn=turn,
                                tool=name, arguments=args)
                     try:
-                        out = dispatch(name, args)
+                        out = self._dispatch(name, args)
                     except ToolError as exc:
                         out = f"错误: {exc}"
                     trace.emit(task_id=task["id"], event="tool_result", turn=turn,

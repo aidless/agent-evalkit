@@ -113,9 +113,9 @@ class ToolError(Exception):
     """工具执行失败的统一包装，带可被 agent 读回的错误信息。"""
 
 
-def dispatch(name: str, arguments: dict) -> str:
-    """按注册表执行工具；任何异常都转成给模型看的结构化错误文本。"""
-    fn = IMPLEMENTATIONS.get(name)
+def dispatch_via(table: dict, name: str, arguments: dict) -> str:
+    """按给定注册表执行工具；任何异常都转成给模型看的结构化错误文本。"""
+    fn = table.get(name)
     if fn is None:
         raise ToolError(f"未知工具 {name!r}；可用工具: {', '.join(sorted(IMPLEMENTATIONS))}")
     try:
@@ -126,6 +126,11 @@ def dispatch(name: str, arguments: dict) -> str:
     except (TypeError, ValueError, KeyError, ZeroDivisionError, OverflowError,
             SyntaxError) as exc:
         raise ToolError(f"{name} 执行失败: {exc}") from exc
+
+
+def dispatch(name: str, arguments: dict) -> str:
+    """默认工具集入口（calc/lookup/convert）。"""
+    return dispatch_via(IMPLEMENTATIONS, name, arguments)
 
 
 IMPLEMENTATIONS = {"calc": calc, "lookup": lookup, "convert": convert}

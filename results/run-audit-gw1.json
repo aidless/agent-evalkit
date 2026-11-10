@@ -1,0 +1,278 @@
+{
+  "run_id": "20261110T090846Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "base_url": "http://127.0.0.1:3425/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 10,
+  "elapsed_s": 54.0,
+  "trace_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/traces/run-20261110T090846Z.jsonl",
+  "results": [
+    {
+      "task_id": "audit-01",
+      "ok": true,
+      "final_answer": "C1",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2877,
+      "completion_tokens": 416,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2721.61,
+        1161.92
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3884.7
+    },
+    {
+      "task_id": "audit-02",
+      "ok": true,
+      "final_answer": "C5",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2907,
+      "completion_tokens": 438,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6630.08,
+        2580.77
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9211.8
+    },
+    {
+      "task_id": "audit-03",
+      "ok": true,
+      "final_answer": "C4 CONFIRMED",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3138,
+      "completion_tokens": 501,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3217.92,
+        1921.61
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5140.6
+    },
+    {
+      "task_id": "audit-04",
+      "ok": true,
+      "final_answer": "UNSUBSTANTIATED",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1325,
+      "completion_tokens": 104,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1986.98,
+        1695.22
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3682.7
+    },
+    {
+      "task_id": "audit-05",
+      "ok": true,
+      "final_answer": "C9",
+      "turns": 3,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 3,
+      "prompt_tokens": 4333,
+      "completion_tokens": 423,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2615.63,
+        2568.23,
+        1106.11
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 6291.3
+    },
+    {
+      "task_id": "audit-06",
+      "ok": true,
+      "final_answer": "2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1359,
+      "completion_tokens": 108,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2245.46,
+        1424.21
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3670.2
+    },
+    {
+      "task_id": "audit-07",
+      "ok": true,
+      "final_answer": "C4,C8",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2821,
+      "completion_tokens": 346,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2745.43,
+        1577.14
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 4323.4
+    },
+    {
+      "task_id": "audit-08",
+      "ok": true,
+      "final_answer": "HIGH,MEDIUM,LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1254,
+      "completion_tokens": 32,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1496.85,
+        1034.63
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2532.0
+    },
+    {
+      "task_id": "audit-09",
+      "ok": true,
+      "final_answer": "C6 LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3091,
+      "completion_tokens": 441,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8399.38,
+        1663.74
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10064.3
+    },
+    {
+      "task_id": "audit-10",
+      "ok": true,
+      "final_answer": "C2 PARTIAL",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2916,
+      "completion_tokens": 436,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3772.38,
+        1450.01
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5223.5
+    }
+  ]
+}

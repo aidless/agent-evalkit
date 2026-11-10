@@ -250,5 +250,77 @@ class TestSelftestAccounting(unittest.TestCase):
         self.assertGreater(checks, 0)
 
 
+class TestAuditTools(unittest.TestCase):
+    """audit 工具集：规则查询、未知规则报错、严重级词表。事实全部从 tmaudit 源码导出。"""
+
+    def test_rule_lookup_has_severity_and_tier(self):
+        from evalkit.audit_tools import audit_rule
+        import json
+        r = json.loads(audit_rule("C4"))
+        self.assertEqual(r["id"], "C4")
+        self.assertEqual(r["evidence_tier"], "CONFIRMED")
+        self.assertEqual(r["default_severity"], "MEDIUM")
+
+    def test_unknown_rule_lists_available(self):
+        from evalkit.audit_tools import audit_rule
+        from evalkit.tools import ToolError
+        with self.assertRaises(ToolError) as cm:
+            audit_rule("C11")
+        self.assertIn("C10", str(cm.exception))
+
+    def test_severities_lists_both_vocabularies(self):
+        from evalkit.audit_tools import audit_severities
+        import json
+        s = json.loads(audit_severities())
+        self.assertEqual(s["valid_severities"], ["HIGH", "MEDIUM", "LOW"])
+        self.assertEqual(s["evidence_tiers"], ["CONFIRMED", "PARTIAL", "UNSUBSTANTIATED"])
+        self.assertIn("PARTIAL", s["tier_meaning"])
+
+    def test_audit_dispatch_wraps_errors(self):
+        from evalkit.audit_tools import AUDIT_DISPATCH
+        from evalkit.tools import ToolError
+        with self.assertRaises(ToolError):
+            AUDIT_DISPATCH["audit_rule"](rule_id="C99")
+
+
+class TestAgentToolset(unittest.TestCase):
+    """Agent 可选工具集（tools / audit）；未知工具集必须报错。"""
+
+    def test_toolset_selection(self):
+        from evalkit.agent import _toolset
+        schemas, dispatch_fn = _toolset("tools")
+        self.assertEqual(schemas[0]["function"]["name"], "calc")
+        schemas, dispatch_fn = _toolset("audit")
+        self.assertEqual(schemas[0]["function"]["name"], "audit_rule")
+        self.assertIn("audit_severities", {s["function"]["name"] for s in schemas})
+
+    def test_unknown_toolset_rejected(self):
+        from evalkit.agent import _toolset
+        with self.assertRaises(ValueError):
+            _toolset("nonexistent")
+
+
+class TestPrefixMetrics(unittest.TestCase):
+    """prefix-cache 命中率：Prometheus 文本解析 + 前后差值。网关无 /metrics 时降级为 None。"""
+
+    PROM = '''# HELP vllm:prefix_cache_queries_total ...
+vllm:prefix_cache_queries_total{engine="0",model_name="Qwen3-4B-AWQ"} 100.0
+vllm:prefix_cache_queries_created{engine="0",model_name="Qwen3-4B-AWQ"} 1.79e+09
+vllm:prefix_cache_hits_total{engine="0",model_name="Qwen3-4B-AWQ"} 41.0
+vllm:prefix_cache_hits_created{engine="0",model_name="Qwen3-4B-AWQ"} 1.79e+09
+'''
+
+    def test_parse_metric_reads_value(self):
+        from evalkit.metrics import parse_metric
+        self.assertEqual(parse_metric(self.PROM, "vllm:prefix_cache_queries_total"), 100.0)
+        self.assertEqual(parse_metric(self.PROM, "vllm:prefix_cache_hits_total"), 41.0)
+
+    def test_parse_metric_missing_returns_none(self):
+        from evalkit.metrics import parse_metric
+        self.assertIsNone(parse_metric(self.PROM, "vllm:nope_total"))
+        # created 后缀同名指标不许误读
+        self.assertIsNone(parse_metric(self.PROM, "vllm:prefix_cache_queries_created_total"))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -19,9 +19,9 @@ ROOT = Path(__file__).resolve().parent
 TASKS_PATH = ROOT / "evals" / "tasks.jsonl"
 
 
-def load_tasks() -> list[dict]:
+def load_tasks(path=None) -> list[dict]:
     tasks = []
-    with TASKS_PATH.open("r", encoding="utf-8") as f:
+    with Path(path or TASKS_PATH).open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:
@@ -41,14 +41,21 @@ def main() -> int:
                     help="单次 LLM 调用的输出上限；思考型模型要调大防止截断（512 只够无思考模型）")
     ap.add_argument("--max-turns", type=int, default=6)
     ap.add_argument("--timeout", type=float, default=60.0)
-    ap.add_argument("--traces-dir", default=str(ROOT / "traces"))
+    ap.add_argument("--toolset", default="tools", choices=["tools", "audit"],
+                    help="tools=calc/lookup/convert；audit=tmaudit C1-C10 规则语义查询（配 evals/tasks-audit.jsonl）")
+    ap.add_argument("--tasks-file", default=str(ROOT / "evals" / "tasks.jsonl"),
+                    help="任务集路径；audit 工具集配 evals/tasks-audit.jsonl")
+    ap.add_argument("--metrics-url", default="",
+                    help="vLLM /metrics 端点（如 http://127.0.0.1:8123/metrics）；给空串则不抓 prefix-cache 命中率")
+    ap.add_argument("--traces-dir", default=str(ROOT / "traces"),
+                    help="trace JSONL 输出目录")
     ap.add_argument("--out", default=str(ROOT / "results" / "latest.json"))
     args = ap.parse_args()
 
     if not args.all and not args.task:
         ap.error("需要 --all 或 --task <id>")
 
-    tasks = load_tasks()
+    tasks = load_tasks(args.tasks_file)
     if args.task:
         tasks = [t for t in tasks if t["id"] == args.task]
         if not tasks:
@@ -57,9 +64,12 @@ def main() -> int:
     if args.limit:
         tasks = tasks[: args.limit]
 
+    from evalkit.metrics import snapshot, diff_rate
+    m_before = snapshot(args.metrics_url) if args.metrics_url else None
+
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     trace_path = Path(args.traces_dir) / f"run-{ts}.jsonl"
-    agent = Agent(model=args.model, base_url=args.base_url, api_key=args.api_key,
+    agent = Agent(toolset=args.toolset, model=args.model, base_url=args.base_url, api_key=args.api_key,
                   max_turns=args.max_turns, timeout=args.timeout, max_tokens=args.max_tokens)
 
     results = []
@@ -89,6 +99,7 @@ def main() -> int:
         "max_tokens": args.max_tokens,
         "total_tasks": len(tasks),
         "elapsed_s": round(time.time() - started, 1),
+        "prefix_cache_hit_rate": diff_rate(m_before, snapshot(args.metrics_url) if args.metrics_url else None),
         "trace_file": str(trace_path),
         "results": results,
     }

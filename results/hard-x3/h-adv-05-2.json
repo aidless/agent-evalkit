@@ -1,0 +1,33 @@
+{
+  "run_id": "20261110T091439Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "base_url": "http://127.0.0.1:3425/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 1,
+  "elapsed_s": 2.9,
+  "prefix_cache_hit_rate": null,
+  "trace_file": "/tmp/run-20261110T091439Z.jsonl",
+  "results": [
+    {
+      "task_id": "adv-05",
+      "ok": true,
+      "final_answer": "43",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1297,
+      "completion_tokens": 54,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1531.36,
+        1411.77
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2944.0
+    }
+  ]
+}

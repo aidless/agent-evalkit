@@ -1,0 +1,279 @@
+{
+  "run_id": "20261110T090940Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "base_url": "http://127.0.0.1:3425/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 10,
+  "elapsed_s": 58.7,
+  "trace_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/traces/run-20261110T090940Z.jsonl",
+  "results": [
+    {
+      "task_id": "audit-01",
+      "ok": true,
+      "final_answer": "C1",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2858,
+      "completion_tokens": 385,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2548.79,
+        982.04
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3532.2
+    },
+    {
+      "task_id": "audit-02",
+      "ok": true,
+      "final_answer": "C5",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2805,
+      "completion_tokens": 350,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6320.61,
+        1538.6
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 7860.3
+    },
+    {
+      "task_id": "audit-03",
+      "ok": true,
+      "final_answer": "C4 CONFIRMED",
+      "turns": 3,
+      "tools_called": [
+        "audit_rule",
+        "audit_severities",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 3,
+      "prompt_tokens": 3957,
+      "completion_tokens": 454,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2824.52,
+        2709.82,
+        1890.7
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 7426.4
+    },
+    {
+      "task_id": "audit-04",
+      "ok": true,
+      "final_answer": "UNSUBSTANTIATED",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1305,
+      "completion_tokens": 84,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1729.01,
+        1390.59
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3120.1
+    },
+    {
+      "task_id": "audit-05",
+      "ok": true,
+      "final_answer": "C9",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2781,
+      "completion_tokens": 347,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2609.84,
+        3099.81
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5710.5
+    },
+    {
+      "task_id": "audit-06",
+      "ok": true,
+      "final_answer": "2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1296,
+      "completion_tokens": 69,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1765.17,
+        1881.16
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3646.8
+    },
+    {
+      "task_id": "audit-07",
+      "ok": true,
+      "final_answer": "C4,C8",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3075,
+      "completion_tokens": 459,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5541.8,
+        2886.84
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 8429.7
+    },
+    {
+      "task_id": "audit-08",
+      "ok": true,
+      "final_answer": "HIGH,MEDIUM,LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1254,
+      "completion_tokens": 87,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1581.51,
+        1486.0
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3068.3
+    },
+    {
+      "task_id": "audit-09",
+      "ok": true,
+      "final_answer": "C6 LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2953,
+      "completion_tokens": 480,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7145.08,
+        3091.93
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10238.1
+    },
+    {
+      "task_id": "audit-10",
+      "ok": true,
+      "final_answer": "C2 PARTIAL",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3079,
+      "completion_tokens": 440,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3288.4,
+        2337.25
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5627.1
+    }
+  ]
+}
