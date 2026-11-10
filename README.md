@@ -169,7 +169,7 @@ python3 run_agent.py --all --replay-trace results/replay-demo/trace-gw7-evidence
 python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json --gate 0.80
 ```
 
-### prefix-cache 命中率（L3 最小件 + 一个上游 bug）
+### prefix-cache 命中率（L3 最小件 + 一段两级归因弯路）
 
 `--metrics-url http://127.0.0.1:8123/metrics` 在 run 前后抓
 `vllm:prefix_cache_{queries,hits}_total` 差值算命中率（`evalkit/metrics.py`，
@@ -185,7 +185,19 @@ python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json --gate 0.
 `prefix_cacheable` 与 fine-grained 禁用告警两条路径；怀疑与 0.33 新引入的
 LBNHC KV cache layout 有关，已报上游
 [vllm#66786](https://github.com/vllm-project/vllm/issues/66786)。
-评测读数 0.9178 与 bug 不冲突（评测 run 的多任务共享系统提示词前缀确实命中）。
+评测读数 0.9178 与该现象不冲突（评测 run 的系统提示词超过一个 block）。
+
+**2026-11-10 终局（在 venv 内给 `kv_cache_manager.get_computed_blocks` 打调试日志后定位）**：
+上游 issue 是**误报**。真相分两层——(1) 冒烟为 0 是流量归因错误（如上）；
+(2)「相同 prompt 永不命中」是因为那些复现 prompt 只有 13 tokens：`request_block_hasher`
+只哈希**完整 block**（`kv_cache_utils.py` 的 "We only hash full blocks"），而
+`get_computed_blocks` 在 prefill 调度时执行、早于 decode 延长请求——不足一个
+block 的 prompt 在 lookup 时 `block_hashes` 恒为空，永远不可能命中。这是
+block 粒度 prefix caching 的**设计行为**，与 LBNHC layout / FLASH_ATTN 无关。
+决定性实验（同一服务同一 layout）：~72 token 相同 prompt ×2，第二次命中
+**64 tokens**（命中率 89%）。issue 已自答并关闭
+[vllm#66786](https://github.com/vllm-project/vllm/issues/66786)（not_planned）。
+教训：报 bug 前先做「改变一个变量」的对照实验——长度就是那个变量。
 
 ### v1 评测集（24 题，2026-11-09，`--max-tokens 512`，已归档 `results/v1-24q/`）
 
