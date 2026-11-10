@@ -30,7 +30,10 @@ jobs:
 
   publish:
     needs: build-check
-    if: startsWith(github.ref, 'refs/tags/v')
+    # PyPI Trusted Publishing 需要先在 pypi.org 注册环境（repo=agent-evalkit,
+    # workflow=release.yml, env=pypi）并把仓库变量 ENABLE_PYPI_PUBLISH 设为 true；
+    # 未注册时本 job 自动跳过，release 流程保持绿色。
+    if: startsWith(github.ref, 'refs/tags/v') && vars.ENABLE_PYPI_PUBLISH == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # PyPI Trusted Publishing（OIDC，无需 token）
