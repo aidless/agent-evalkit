@@ -1,0 +1,13 @@
+{
+ "backend": "Qwen3-4B-AWQ",
+ "tasks": 36,
+ "mean_power_w": 51.85631313131314,
+ "samples": 594,
+ "wall_seconds": 592.4,
+ "kwh": 0.008533244416386082,
+ "cny": 0.00511994664983165,
+ "electricity_cny_per_kwh": 0.6,
+ "total_tokens": 72068,
+ "cny_per_1k_tokens": 7.104327371137883e-05,
+ "口径": "只算 GPU 电费；serving 常驻功率按采样窗口均值；不含整机/折旧/机房"
+}

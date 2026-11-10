@@ -1,0 +1,467 @@
+{
+  "run_id": "20261109T151700Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "base_url": "http://127.0.0.1:3425/v1",
+  "max_turns": 1,
+  "total_tasks": 24,
+  "elapsed_s": 52.0,
+  "trace_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/traces/run-20261109T151700Z.jsonl",
+  "results": [
+    {
+      "task_id": "calc-01",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 609,
+      "completion_tokens": 41,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2049.56
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2050.5
+    },
+    {
+      "task_id": "calc-02",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 611,
+      "completion_tokens": 47,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1690.22
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1690.6
+    },
+    {
+      "task_id": "calc-03",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 612,
+      "completion_tokens": 44,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2008.91
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2009.3
+    },
+    {
+      "task_id": "calc-04",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 611,
+      "completion_tokens": 46,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2218.78
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2219.2
+    },
+    {
+      "task_id": "calc-05",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 609,
+      "completion_tokens": 44,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1398.31
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1398.9
+    },
+    {
+      "task_id": "calc-06",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 613,
+      "completion_tokens": 76,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2991.11
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2991.6
+    },
+    {
+      "task_id": "calc-07",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 611,
+      "completion_tokens": 44,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1846.67
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1847.2
+    },
+    {
+      "task_id": "calc-08",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 614,
+      "completion_tokens": 46,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1751.91
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1752.4
+    },
+    {
+      "task_id": "lookup-01",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 619,
+      "completion_tokens": 46,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1837.09
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1837.6
+    },
+    {
+      "task_id": "lookup-02",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 615,
+      "completion_tokens": 40,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2083.55
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2084.1
+    },
+    {
+      "task_id": "lookup-03",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 613,
+      "completion_tokens": 41,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1355.51
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1356.1
+    },
+    {
+      "task_id": "lookup-04",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 612,
+      "completion_tokens": 40,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1542.71
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1543.2
+    },
+    {
+      "task_id": "lookup-05",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 615,
+      "completion_tokens": 41,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1401.72
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1402.2
+    },
+    {
+      "task_id": "lookup-06",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 615,
+      "completion_tokens": 40,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1493.96
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1494.4
+    },
+    {
+      "task_id": "lookup-07",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 626,
+      "completion_tokens": 45,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1271.62
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1272.0
+    },
+    {
+      "task_id": "lookup-08",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 618,
+      "completion_tokens": 48,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1543.84
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1544.3
+    },
+    {
+      "task_id": "conv-01",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 612,
+      "completion_tokens": 71,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2490.29
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2490.6
+    },
+    {
+      "task_id": "conv-02",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 608,
+      "completion_tokens": 70,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1491.0
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1491.3
+    },
+    {
+      "task_id": "conv-03",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 610,
+      "completion_tokens": 69,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1647.88
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1648.2
+    },
+    {
+      "task_id": "conv-04",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 611,
+      "completion_tokens": 70,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1568.72
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1569.1
+    },
+    {
+      "task_id": "multi-01",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 624,
+      "completion_tokens": 43,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1283.35
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 1283.8
+    },
+    {
+      "task_id": "multi-02",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 625,
+      "completion_tokens": 98,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        2020.87
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 2021.3
+    },
+    {
+      "task_id": "multi-03",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 617,
+      "completion_tokens": 41,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5311.11
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 5311.8
+    },
+    {
+      "task_id": "multi-04",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 619,
+      "completion_tokens": 70,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7663.75
+      ],
+      "error": "超过最大轮次 1",
+      "error_type": "loop_exceeded",
+      "wall_ms": 7664.6
+    }
+  ]
+}

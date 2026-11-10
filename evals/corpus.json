@@ -1,0 +1,13 @@
+{
+  "gpu.name": "RTX 3060 Laptop",
+  "gpu.vram_gb": "6",
+  "gpu.driver": "595.99.02",
+  "model.name": "Qwen3-4B",
+  "model.params_b": "4",
+  "model.quant": "AWQ-4bit",
+  "serve.framework": "vLLM",
+  "serve.max_concurrency": "16",
+  "serve.gpu_memory_utilization": "0.90",
+  "eval.tasks": "24",
+  "eval.gate_threshold": "0.80"
+}

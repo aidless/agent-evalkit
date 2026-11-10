@@ -1,0 +1,21 @@
+name: eval-gate
+
+# 离线回归门禁：对已落盘的 trace 回放评分，不调 LLM、不需要任何 secret。
+on: [push, pull_request]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 单测（工具安全 / 评分器）
+        run: python3 tests/test_evalkit.py
+      - name: 门禁自检 RED→GREEN
+        run: python3 run_eval.py --selftest
+      - name: 回放评分 + 回归门禁
+        run: python3 run_eval.py --replay results/run-gw1.json --gate 0.80
+      - name: trace 摘要
+        run: python3 trace_summary.py traces/

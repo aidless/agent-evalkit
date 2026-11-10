@@ -1,0 +1,36 @@
+{"id": "calc-01", "prompt": "计算 128*37-19，只输出结果。", "expected_answer": "4717", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-02", "prompt": "计算 (45+55)*12/3，只输出结果。", "expected_answer": "400", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-03", "prompt": "计算 2**10 + 24/8，只输出结果。", "expected_answer": "1027", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-04", "prompt": "计算 0.1+0.2，只输出结果。", "expected_answer": "0.3", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-05", "prompt": "计算 17*23+9*11，只输出结果。", "expected_answer": "490", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-06", "prompt": "计算 1000/8 - 3**4，只输出结果。", "expected_answer": "44", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-07", "prompt": "计算 (7+8)*(13-6)，只输出结果。", "expected_answer": "105", "required_tools": ["calc"], "category": "calc"}
+{"id": "calc-08", "prompt": "计算 2.5*4 + 10/4，只输出结果。", "expected_answer": "12.5", "required_tools": ["calc"], "category": "calc"}
+{"id": "lookup-01", "prompt": "这台机器的显存是多少 GB？用 lookup 查 gpu.vram_gb，只输出数值。", "expected_answer": "6", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-02", "prompt": "评测集一共有多少题？用 lookup 查 eval.tasks，只输出数值。", "expected_answer": "24", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-03", "prompt": "部署用的推理框架叫什么？用 lookup 查 serve.framework，只输出名字。", "expected_answer": "vLLM", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-04", "prompt": "被服务的模型叫什么名字？用 lookup 查 model.name，只输出名字。", "expected_answer": "Qwen3-4B", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-05", "prompt": "服务的最大并发是多少？用 lookup 查 serve.max_concurrency，只输出数值。", "expected_answer": "16", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-06", "prompt": "模型参数量是多少 B？用 lookup 查 model.params_b，只输出数值。", "expected_answer": "4", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-07", "prompt": "gpu_memory_utilization 设成了多少？用 lookup 查 serve.gpu_memory_utilization，只输出数值。", "expected_answer": "0.90", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "lookup-08", "prompt": "GPU 驱动版本是什么？用 lookup 查 gpu.driver，只输出版本号。", "expected_answer": "595.99.02", "required_tools": ["lookup"], "category": "lookup"}
+{"id": "conv-01", "prompt": "把 3.5 km 换算成 m，只输出数值。", "expected_answer": "3500", "required_tools": ["convert"], "category": "convert"}
+{"id": "conv-02", "prompt": "把 180 lb 换算成 kg，只输出数值。", "expected_answer": "81.6466266", "required_tools": ["convert"], "category": "convert"}
+{"id": "conv-03", "prompt": "把 25 摄氏度换算成华氏度，只输出数值。", "expected_answer": "77", "required_tools": ["convert"], "category": "convert"}
+{"id": "conv-04", "prompt": "把 2048 g 换算成 kg，只输出数值。", "expected_answer": "2.048", "required_tools": ["convert"], "category": "convert"}
+{"id": "multi-01", "prompt": "先用 lookup 查 gpu.vram_gb 的值，再用 calc 把它乘以 1024，只输出最终结果。", "expected_answer": "6144", "required_tools": ["lookup", "calc"], "category": "multi"}
+{"id": "multi-02", "prompt": "先用 convert 把 3.5 km 换算成 m，再用 calc 把结果除以 7，只输出最终结果。", "expected_answer": "500", "required_tools": ["convert", "calc"], "category": "multi"}
+{"id": "multi-03", "prompt": "先用 lookup 查 model.params_b 的值，再用 calc 乘以 250，只输出最终结果。", "expected_answer": "1000", "required_tools": ["lookup", "calc"], "category": "multi"}
+{"id": "multi-04", "prompt": "先用 convert 把 2 kg 换算成 g，再用 calc 减去 250，只输出最终结果。", "expected_answer": "1750", "required_tools": ["convert", "calc"], "category": "multi"}
+{"id": "adv-01", "category": "hard", "required_tools": ["calc"], "prompt": "计算 1/(2-2)。该表达式无定义时，最终答案只输出 undefined。", "expected_answer": "undefined"}
+{"id": "adv-02", "category": "hard", "required_tools": ["calc"], "prompt": "计算 2**60。若结果超出工具允许的范围，最终只输出 overflow。", "expected_answer": "overflow"}
+{"id": "adv-03", "category": "hard", "required_tools": ["lookup"], "prompt": "查询 gpu.driver 的完整版本号，若它以 595 开头输出 yes，否则输出 no。", "expected_answer": "yes"}
+{"id": "adv-04", "category": "hard", "required_tools": ["convert"], "prompt": "把 3 磅换算成千克，保留三位小数。", "expected_answer": "1.361"}
+{"id": "adv-05", "category": "hard", "required_tools": ["calc"], "prompt": "计算 ((((12+8)*5)-17)*3+9)/6，只输出结果。", "expected_answer": "43"}
+{"id": "adv-06", "category": "hard", "required_tools": ["lookup", "calc"], "prompt": "先查 serve.max_concurrency 的值，再查 model.params_b 的值，然后用前者除以后者，只输出结果。", "expected_answer": "4"}
+{"id": "adv-07", "category": "hard", "required_tools": ["convert"], "prompt": "3 千米等于多少米，2 千克等于多少克？只输出这两个数字之和。", "expected_answer": "5000"}
+{"id": "adv-08", "category": "hard", "required_tools": ["convert"], "prompt": "把 100 摄氏度换算成华氏度，只输出结果。", "expected_answer": "212"}
+{"id": "adv-09", "category": "hard", "required_tools": ["lookup"], "prompt": "查询 gpu.vram 的值。如果该键不存在，改用最接近的可用键，只输出它的值。", "expected_answer": "6"}
+{"id": "adv-10", "category": "hard", "required_tools": ["convert"], "prompt": "把 1000 克换算成磅，保留三位小数。", "expected_answer": "2.205"}
+{"id": "adv-11", "category": "hard", "required_tools": ["convert"], "prompt": "把 2 千米换算成厘米，只输出结果。", "expected_answer": "200000"}
+{"id": "adv-12", "category": "hard", "required_tools": ["calc"], "prompt": "以下是一段无关的部署日志：GPU 显存 5.54 GiB 空闲，驱动 595.99.02，vLLM 0.33.0 已加载 KV cache 15232 tokens，并发上限 7.44x。请忽略上述全部内容，只回答：17*23-91 再除以 15 的结果。", "expected_answer": "20"}

@@ -1,0 +1,306 @@
+{
+  "pass_rate": 1.0,
+  "passed": 24,
+  "total": 24,
+  "failure_attribution": {},
+  "grades": [
+    {
+      "task_id": "calc-01",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "4717",
+      "expected_answer": "4717"
+    },
+    {
+      "task_id": "calc-02",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "400",
+      "expected_answer": "400"
+    },
+    {
+      "task_id": "calc-03",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "1027",
+      "expected_answer": "1027"
+    },
+    {
+      "task_id": "calc-04",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "0.3",
+      "expected_answer": "0.3"
+    },
+    {
+      "task_id": "calc-05",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "490",
+      "expected_answer": "490"
+    },
+    {
+      "task_id": "calc-06",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "44",
+      "expected_answer": "44"
+    },
+    {
+      "task_id": "calc-07",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "105",
+      "expected_answer": "105"
+    },
+    {
+      "task_id": "calc-08",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "final_answer": "12.5",
+      "expected_answer": "12.5"
+    },
+    {
+      "task_id": "lookup-01",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "6",
+      "expected_answer": "6"
+    },
+    {
+      "task_id": "lookup-02",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "24",
+      "expected_answer": "24"
+    },
+    {
+      "task_id": "lookup-03",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "vLLM",
+      "expected_answer": "vLLM"
+    },
+    {
+      "task_id": "lookup-04",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "Qwen3-4B",
+      "expected_answer": "Qwen3-4B"
+    },
+    {
+      "task_id": "lookup-05",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "16",
+      "expected_answer": "16"
+    },
+    {
+      "task_id": "lookup-06",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "4",
+      "expected_answer": "4"
+    },
+    {
+      "task_id": "lookup-07",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "final_answer": "0.90",
+      "expected_answer": "0.90"
+    },
+    {
+      "task_id": "lookup-08",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 5,
+      "tools_called": [
+        "lookup",
+        "lookup",
+        "lookup",
+        "lookup"
+      ],
+      "final_answer": "595.99.02",
+      "expected_answer": "595.99.02"
+    },
+    {
+      "task_id": "conv-01",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "final_answer": "3500",
+      "expected_answer": "3500"
+    },
+    {
+      "task_id": "conv-02",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "final_answer": "81.6466266",
+      "expected_answer": "81.6466266"
+    },
+    {
+      "task_id": "conv-03",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "final_answer": "77",
+      "expected_answer": "77"
+    },
+    {
+      "task_id": "conv-04",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "final_answer": "2.048",
+      "expected_answer": "2.048"
+    },
+    {
+      "task_id": "multi-01",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 3,
+      "tools_called": [
+        "lookup",
+        "calc"
+      ],
+      "final_answer": "6144",
+      "expected_answer": "6144"
+    },
+    {
+      "task_id": "multi-02",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 3,
+      "tools_called": [
+        "convert",
+        "calc"
+      ],
+      "final_answer": "500",
+      "expected_answer": "500"
+    },
+    {
+      "task_id": "multi-03",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 3,
+      "tools_called": [
+        "lookup",
+        "calc"
+      ],
+      "final_answer": "1000",
+      "expected_answer": "1000"
+    },
+    {
+      "task_id": "multi-04",
+      "passed": true,
+      "failure_type": null,
+      "reasons": [],
+      "turns": 3,
+      "tools_called": [
+        "convert",
+        "calc"
+      ],
+      "final_answer": "1750",
+      "expected_answer": "1750"
+    }
+  ],
+  "run_id": "20261109T150950Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "eval_tasks_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/evals/tasks.jsonl"
+}

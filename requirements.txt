@@ -1,0 +1,2 @@
+# 本项目零第三方依赖：只用 Python 3.10+ 标准库（urllib / json / ast / statistics）。
+# 复现环境：python3 --version → 3.12.3

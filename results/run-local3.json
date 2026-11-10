@@ -1,0 +1,741 @@
+{
+  "run_id": "20261110T014632Z",
+  "model": "Qwen3-4B-AWQ",
+  "base_url": "http://127.0.0.1:8123/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 36,
+  "elapsed_s": 592.2,
+  "trace_file": "traces/run-20261110T014632Z.jsonl",
+  "results": [
+    {
+      "task_id": "calc-01",
+      "ok": true,
+      "final_answer": "4717",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1340,
+      "completion_tokens": 435,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        9697.51,
+        4434.48
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 14132.8
+    },
+    {
+      "task_id": "calc-02",
+      "ok": true,
+      "final_answer": "400",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1314,
+      "completion_tokens": 509,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8724.71,
+        7343.34
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 16068.6
+    },
+    {
+      "task_id": "calc-03",
+      "ok": true,
+      "final_answer": "1027",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1253,
+      "completion_tokens": 333,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6744.06,
+        4222.64
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10967.3
+    },
+    {
+      "task_id": "calc-04",
+      "ok": true,
+      "final_answer": "0.3",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1220,
+      "completion_tokens": 309,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5986.42,
+        3892.19
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9879.2
+    },
+    {
+      "task_id": "calc-05",
+      "ok": true,
+      "final_answer": "490",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1278,
+      "completion_tokens": 362,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7497.58,
+        3907.67
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 11405.9
+    },
+    {
+      "task_id": "calc-06",
+      "ok": true,
+      "final_answer": "44",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1325,
+      "completion_tokens": 494,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8736.99,
+        6527.13
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 15264.6
+    },
+    {
+      "task_id": "calc-07",
+      "ok": true,
+      "final_answer": "105",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1292,
+      "completion_tokens": 356,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7810.95,
+        3178.49
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10990.0
+    },
+    {
+      "task_id": "calc-08",
+      "ok": true,
+      "final_answer": "12.5",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1289,
+      "completion_tokens": 446,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7623.14,
+        6181.06
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 13804.7
+    },
+    {
+      "task_id": "lookup-01",
+      "ok": true,
+      "final_answer": "6",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1365,
+      "completion_tokens": 417,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        9841.81,
+        3229.53
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 13071.9
+    },
+    {
+      "task_id": "lookup-02",
+      "ok": true,
+      "final_answer": "24",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1281,
+      "completion_tokens": 313,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7436.48,
+        2295.2
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9732.3
+    },
+    {
+      "task_id": "lookup-03",
+      "ok": true,
+      "final_answer": "vLLM",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1214,
+      "completion_tokens": 294,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5263.09,
+        3884.16
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9147.8
+    },
+    {
+      "task_id": "lookup-04",
+      "ok": true,
+      "final_answer": "Qwen3-4B",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1279,
+      "completion_tokens": 342,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7133.85,
+        3496.96
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10631.4
+    },
+    {
+      "task_id": "lookup-05",
+      "ok": true,
+      "final_answer": "16",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1332,
+      "completion_tokens": 412,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8919.61,
+        3905.15
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 12825.5
+    },
+    {
+      "task_id": "lookup-06",
+      "ok": true,
+      "final_answer": "4",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1217,
+      "completion_tokens": 263,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5429.38,
+        2819.57
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 8249.5
+    },
+    {
+      "task_id": "lookup-07",
+      "ok": true,
+      "final_answer": "0.90",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1279,
+      "completion_tokens": 306,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7258.81,
+        2487.12
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9746.5
+    },
+    {
+      "task_id": "lookup-08",
+      "ok": true,
+      "final_answer": "595.99.02",
+      "turns": 2,
+      "tools_called": [
+        "lookup"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1240,
+      "completion_tokens": 307,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5752.07,
+        3686.48
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9439.1
+    },
+    {
+      "task_id": "conv-01",
+      "ok": true,
+      "final_answer": "3500",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1238,
+      "completion_tokens": 278,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5966.72,
+        2616.61
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 8583.8
+    },
+    {
+      "task_id": "conv-02",
+      "ok": true,
+      "final_answer": "81.6466266",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1287,
+      "completion_tokens": 342,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7330.92,
+        3297.76
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10629.2
+    },
+    {
+      "task_id": "conv-03",
+      "ok": true,
+      "final_answer": "77",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1328,
+      "completion_tokens": 421,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8903.01,
+        4677.51
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 13581.0
+    },
+    {
+      "task_id": "conv-04",
+      "ok": true,
+      "final_answer": "2.048",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1283,
+      "completion_tokens": 357,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7521.67,
+        4001.47
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 11523.6
+    },
+    {
+      "task_id": "multi-01",
+      "ok": true,
+      "final_answer": "6144",
+      "turns": 2,
+      "tools_called": [
+        "lookup",
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1359,
+      "completion_tokens": 624,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8519.72,
+        10790.03
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 19310.6
+    },
+    {
+      "task_id": "multi-02",
+      "ok": true,
+      "final_answer": "500",
+      "turns": 2,
+      "tools_called": [
+        "convert",
+        "calc",
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1413,
+      "completion_tokens": 558,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        9927.98,
+        7479.34
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 17407.9
+    },
+    {
+      "task_id": "multi-03",
+      "ok": true,
+      "final_answer": "1000",
+      "turns": 3,
+      "tools_called": [
+        "lookup",
+        "calc",
+        "calc"
+      ],
+      "llm_calls": 3,
+      "prompt_tokens": 2287,
+      "completion_tokens": 672,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5751.99,
+        8251.75,
+        7080.23
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 21084.9
+    },
+    {
+      "task_id": "multi-04",
+      "ok": true,
+      "final_answer": "1750",
+      "turns": 2,
+      "tools_called": [
+        "convert",
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1304,
+      "completion_tokens": 347,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6923.26,
+        3934.58
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10858.4
+    },
+    {
+      "task_id": "adv-01",
+      "ok": true,
+      "final_answer": "undefined",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1548,
+      "completion_tokens": 627,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        15583.44,
+        4344.86
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 19928.9
+    },
+    {
+      "task_id": "adv-02",
+      "ok": true,
+      "final_answer": "overflow",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1399,
+      "completion_tokens": 618,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        10666.48,
+        8415.66
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 19082.7
+    },
+    {
+      "task_id": "adv-03",
+      "ok": true,
+      "final_answer": "yes",
+      "turns": 3,
+      "tools_called": [
+        "lookup",
+        "calc"
+      ],
+      "llm_calls": 3,
+      "prompt_tokens": 2237,
+      "completion_tokens": 920,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6057.39,
+        6385.95,
+        15975.16
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 28419.4
+    },
+    {
+      "task_id": "adv-04",
+      "ok": true,
+      "final_answer": "1.361",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1401,
+      "completion_tokens": 507,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        11080.36,
+        4804.47
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 15885.4
+    },
+    {
+      "task_id": "adv-05",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [],
+      "llm_calls": 2,
+      "prompt_tokens": 1622,
+      "completion_tokens": 1501,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "输出被 max_tokens=2048 截断且无工具调用（思考未闭合，finish_reason=length）",
+      "error_type": "orchestration_error",
+      "wall_ms": 48227.9
+    },
+    {
+      "task_id": "adv-06",
+      "ok": true,
+      "final_answer": "4",
+      "turns": 2,
+      "tools_called": [
+        "lookup",
+        "lookup",
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1797,
+      "completion_tokens": 889,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        22289.28,
+        5649.75
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 27939.8
+    },
+    {
+      "task_id": "adv-07",
+      "ok": true,
+      "final_answer": "5000",
+      "turns": 2,
+      "tools_called": [
+        "convert",
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1447,
+      "completion_tokens": 556,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        11961.4,
+        5462.61
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 17424.6
+    },
+    {
+      "task_id": "adv-08",
+      "ok": true,
+      "final_answer": "212",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1161,
+      "completion_tokens": 179,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3497.21,
+        2140.84
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5638.5
+    },
+    {
+      "task_id": "adv-09",
+      "ok": true,
+      "final_answer": "6",
+      "turns": 3,
+      "tools_called": [
+        "lookup",
+        "lookup"
+      ],
+      "llm_calls": 3,
+      "prompt_tokens": 3992,
+      "completion_tokens": 1284,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        33102.17,
+        3855.36,
+        2834.3
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 39792.8
+    },
+    {
+      "task_id": "adv-10",
+      "ok": true,
+      "final_answer": "2.205",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1279,
+      "completion_tokens": 451,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7101.24,
+        7501.37
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 14603.2
+    },
+    {
+      "task_id": "adv-11",
+      "ok": true,
+      "final_answer": "200000",
+      "turns": 2,
+      "tools_called": [
+        "convert"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1289,
+      "completion_tokens": 396,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7678.34,
+        4634.76
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 12313.6
+    },
+    {
+      "task_id": "adv-12",
+      "ok": true,
+      "final_answer": "20",
+      "turns": 2,
+      "tools_called": [
+        "calc"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2036,
+      "completion_tokens": 1418,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        26277.36,
+        18282.35
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 44560.3
+    }
+  ]
+}
