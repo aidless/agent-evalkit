@@ -1,0 +1,400 @@
+{
+  "run_id": "20261110T101228Z",
+  "model": "Qwen3-4B-AWQ",
+  "base_url": "http://127.0.0.1:8123/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 20,
+  "elapsed_s": 1023.6,
+  "prefix_cache_hit_rate": null,
+  "trace_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/traces/run-20261110T101228Z.jsonl",
+  "results": [
+    {
+      "task_id": "audit-01",
+      "ok": true,
+      "final_answer": "C3",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1378,
+      "completion_tokens": 608,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        20120.57,
+        8857.58
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 28979.2
+    },
+    {
+      "task_id": "audit-02",
+      "ok": true,
+      "final_answer": "C3",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1284,
+      "completion_tokens": 960,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        13878.68,
+        30829.49
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 44708.8
+    },
+    {
+      "task_id": "audit-03",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [],
+      "llm_calls": 2,
+      "prompt_tokens": 1752,
+      "completion_tokens": 1478,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "输出被 max_tokens=2048 截断且无工具调用（思考未闭合，finish_reason=length）",
+      "error_type": "orchestration_error",
+      "wall_ms": 69284.9
+    },
+    {
+      "task_id": "audit-04",
+      "ok": true,
+      "final_answer": "UNSUBSTANTIATED",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1495,
+      "completion_tokens": 770,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        22147.07,
+        12936.99
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 35084.9
+    },
+    {
+      "task_id": "audit-05",
+      "ok": true,
+      "final_answer": "C3",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1458,
+      "completion_tokens": 903,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        28393.08,
+        19173.87
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 47567.6
+    },
+    {
+      "task_id": "audit-06",
+      "ok": true,
+      "final_answer": "2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1842,
+      "completion_tokens": 1004,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        37871.02,
+        8326.0
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 46198.3
+    },
+    {
+      "task_id": "audit-07",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 426,
+      "completion_tokens": 834,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        40203.17
+      ],
+      "error": "HTTP 400: {\"error\":{\"message\":\"This model's maximum context length is 2048 tokens. However, your prompt contains at least 2049 input tokens, which exceeds this limit even without any output tokens. Please reduce the length of the input prompt. (parameter=input_tokens, value=2049)\",\"type\":\"BadRequestError\",\"param\":\"input_tokens\",\"code\":400}}",
+      "error_type": "api_error",
+      "wall_ms": 40329.8
+    },
+    {
+      "task_id": "audit-08",
+      "ok": true,
+      "final_answer": "HIGH,MEDIUM,LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1265,
+      "completion_tokens": 481,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        13738.47,
+        9518.27
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 23257.2
+    },
+    {
+      "task_id": "audit-09",
+      "ok": true,
+      "final_answer": "C1 HIGH",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1867,
+      "completion_tokens": 1224,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        39605.01,
+        15696.52
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 55302.3
+    },
+    {
+      "task_id": "audit-10",
+      "ok": true,
+      "final_answer": "C7 PARTIAL",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1591,
+      "completion_tokens": 1087,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        24215.64,
+        26546.66
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 50763.3
+    },
+    {
+      "task_id": "audit-11",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [],
+      "llm_calls": 2,
+      "prompt_tokens": 1696,
+      "completion_tokens": 1399,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "输出被 max_tokens=2048 截断且无工具调用（思考未闭合，finish_reason=length）",
+      "error_type": "orchestration_error",
+      "wall_ms": 62608.8
+    },
+    {
+      "task_id": "audit-12",
+      "ok": true,
+      "final_answer": "CONFIRMED MEDIUM",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1323,
+      "completion_tokens": 431,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        15840.4,
+        5402.05
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 21243.2
+    },
+    {
+      "task_id": "audit-13",
+      "ok": false,
+      "final_answer": null,
+      "turns": 2,
+      "tools_called": [],
+      "llm_calls": 2,
+      "prompt_tokens": 1349,
+      "completion_tokens": 1450,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "输出被 max_tokens=2048 截断且无工具调用（思考未闭合，finish_reason=length）",
+      "error_type": "orchestration_error",
+      "wall_ms": 65206.6
+    },
+    {
+      "task_id": "audit-14",
+      "ok": false,
+      "final_answer": null,
+      "turns": 1,
+      "tools_called": [],
+      "llm_calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "cost": 0.0,
+      "llm_latency_ms": [],
+      "error": "重试 3 次后仍失败: TimeoutError: timed out",
+      "error_type": "api_error",
+      "wall_ms": 183160.6
+    },
+    {
+      "task_id": "audit-15",
+      "ok": true,
+      "final_answer": "C2",
+      "turns": 1,
+      "tools_called": [],
+      "llm_calls": 1,
+      "prompt_tokens": 425,
+      "completion_tokens": 889,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        43698.44
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 43698.8
+    },
+    {
+      "task_id": "audit-16",
+      "ok": true,
+      "final_answer": "PARTIAL LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1288,
+      "completion_tokens": 522,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        16251.65,
+        9405.13
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 25657.4
+    },
+    {
+      "task_id": "audit-17",
+      "ok": true,
+      "final_answer": "C2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1484,
+      "completion_tokens": 1167,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        20937.15,
+        34327.48
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 55265.4
+    },
+    {
+      "task_id": "audit-18",
+      "ok": true,
+      "final_answer": "MEDIUM,MEDIUM",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2115,
+      "completion_tokens": 1233,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        46557.73,
+        15497.08
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 62055.6
+    },
+    {
+      "task_id": "audit-19",
+      "ok": true,
+      "final_answer": "C3",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1369,
+      "completion_tokens": 839,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        19717.19,
+        19911.0
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 39629.4
+    },
+    {
+      "task_id": "audit-20",
+      "ok": true,
+      "final_answer": "C2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1481,
+      "completion_tokens": 489,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        16111.16,
+        7468.2
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 23580.4
+    }
+  ]
+}

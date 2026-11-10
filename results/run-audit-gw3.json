@@ -1,0 +1,548 @@
+{
+  "run_id": "20261110T103146Z",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "base_url": "http://127.0.0.1:3425/v1",
+  "max_turns": 6,
+  "max_tokens": 2048,
+  "total_tasks": 20,
+  "elapsed_s": 126.2,
+  "prefix_cache_hit_rate": null,
+  "trace_file": "/home/liuzewen/F:\\deepseek/agent-evalkit/traces/run-20261110T103146Z.jsonl",
+  "results": [
+    {
+      "task_id": "audit-01",
+      "ok": true,
+      "final_answer": "C1",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2884,
+      "completion_tokens": 434,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3528.86,
+        2624.47
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 6155.9
+    },
+    {
+      "task_id": "audit-02",
+      "ok": true,
+      "final_answer": "C5",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2889,
+      "completion_tokens": 443,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        6695.03,
+        4358.52
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 11055.2
+    },
+    {
+      "task_id": "audit-03",
+      "ok": true,
+      "final_answer": "C4 CONFIRMED",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3101,
+      "completion_tokens": 500,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        8324.25,
+        1719.99
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 10045.5
+    },
+    {
+      "task_id": "audit-04",
+      "ok": true,
+      "final_answer": "UNSUBSTANTIATED",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1304,
+      "completion_tokens": 91,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1757.74,
+        1386.27
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 3144.9
+    },
+    {
+      "task_id": "audit-05",
+      "ok": true,
+      "final_answer": "C9",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2900,
+      "completion_tokens": 455,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3945.46,
+        3166.32
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 7115.0
+    },
+    {
+      "task_id": "audit-06",
+      "ok": true,
+      "final_answer": "2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1296,
+      "completion_tokens": 50,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1707.91,
+        1161.52
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2870.2
+    },
+    {
+      "task_id": "audit-07",
+      "ok": true,
+      "final_answer": "C4,C8",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2875,
+      "completion_tokens": 402,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5553.65,
+        2775.9
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 8331.3
+    },
+    {
+      "task_id": "audit-08",
+      "ok": true,
+      "final_answer": "HIGH,MEDIUM,LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1319,
+      "completion_tokens": 98,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1051.36,
+        1231.65
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2283.9
+    },
+    {
+      "task_id": "audit-09",
+      "ok": true,
+      "final_answer": "C6 LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3094,
+      "completion_tokens": 469,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        7224.24,
+        2189.8
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9416.1
+    },
+    {
+      "task_id": "audit-10",
+      "ok": true,
+      "final_answer": "C2 PARTIAL",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3070,
+      "completion_tokens": 432,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3184.51,
+        2350.24
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5536.5
+    },
+    {
+      "task_id": "audit-11",
+      "ok": true,
+      "final_answer": "C1 HIGH",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3105,
+      "completion_tokens": 629,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5646.67,
+        4164.17
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 9812.7
+    },
+    {
+      "task_id": "audit-12",
+      "ok": true,
+      "final_answer": "CONFIRMED MEDIUM",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1254,
+      "completion_tokens": 117,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1353.23,
+        1567.56
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2921.6
+    },
+    {
+      "task_id": "audit-13",
+      "ok": true,
+      "final_answer": "C10 LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2889,
+      "completion_tokens": 471,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        5841.5,
+        3061.09
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 8904.3
+    },
+    {
+      "task_id": "audit-14",
+      "ok": true,
+      "final_answer": "C1,C2",
+      "turns": 2,
+      "tools_called": [
+        "audit_severities",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3016,
+      "completion_tokens": 428,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3255.12,
+        1930.36
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5187.1
+    },
+    {
+      "task_id": "audit-15",
+      "ok": true,
+      "final_answer": "C3",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 3135,
+      "completion_tokens": 572,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        4559.0,
+        2118.58
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 6678.8
+    },
+    {
+      "task_id": "audit-16",
+      "ok": true,
+      "final_answer": "PARTIAL LOW",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1436,
+      "completion_tokens": 89,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3516.32,
+        2946.34
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 6463.7
+    },
+    {
+      "task_id": "audit-17",
+      "ok": true,
+      "final_answer": "C7",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2898,
+      "completion_tokens": 407,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3507.01,
+        2077.42
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5586.3
+    },
+    {
+      "task_id": "audit-18",
+      "ok": true,
+      "final_answer": "MEDIUM,MEDIUM",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2914,
+      "completion_tokens": 480,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        3656.67,
+        1857.58
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 5515.8
+    },
+    {
+      "task_id": "audit-19",
+      "ok": true,
+      "final_answer": "C9",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule",
+        "audit_rule"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 2799,
+      "completion_tokens": 357,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        4194.45,
+        2210.56
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 6406.1
+    },
+    {
+      "task_id": "audit-20",
+      "ok": true,
+      "final_answer": "C2",
+      "turns": 2,
+      "tools_called": [
+        "audit_rule",
+        "audit_rule",
+        "audit_severities"
+      ],
+      "llm_calls": 2,
+      "prompt_tokens": 1613,
+      "completion_tokens": 114,
+      "cost": 0.0,
+      "llm_latency_ms": [
+        1383.32,
+        1383.6
+      ],
+      "error": null,
+      "error_type": null,
+      "wall_ms": 2767.7
+    }
+  ]
+}

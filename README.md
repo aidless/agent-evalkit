@@ -137,8 +137,18 @@ orchestration_error → 包进 `ToolError` 回灌自纠（`TestDispatchSyntaxErr
 `--toolset audit` 挂 3 个规则语义查询工具（`audit_rule`/`audit_check`/`audit_severities`），
 规则事实（十类检查、三态证据层级 CONFIRMED/PARTIAL/UNSUBSTANTIATED、默认严重级）
 逐字导出自 PyPI 在架包 tmaudit 0.5.1 的源码（`evidence.py` CHECK_EVIDENCE 表）。
-网关 ×2：`run-audit-gw1/gw2` 均 **10/10 = 1.0000**，门禁 PASS，42 次 LLM 调用
-p50=2245 / p99=8399 ms。trace 纪律同样生效：audit-01 单题内出现 10 次同参
+任务集 2026-11-10 扩到 **20 题**（audit-11..20：默认严重级、证据层级、
+    规则间对比）。跨后端对照（`--max-tokens 2048`）：
+
+| 后端 | 通过率 | 主要失败 |
+|---|---|---|
+| 网关 flash（×3） | **20/20 = 1.0000** | — |
+| 本地 Qwen3-4B-AWQ | **7/20 = 0.3500** | wrong_answer 8（多题把「规则归类」答成 C3 兜底）、思考截断 3（2048 想不完）、上下文溢出 1（prompt 2049 > max-model-len 2048）、超时 1 |
+
+    **audit 集比工具集区分度更高**（工具集本地 0.9722 vs audit 集 0.35）：
+    规则语义题要求模型先查规则再精确归类，4B 在 2048 token 思考预算内做不到——
+    这条失败链本身（api_error 400 上下文溢出）还指出了 KV cache 2,224 tokens
+    共存配置下 max-model-len 抬不高的部署约束。trace 纪律同样生效：audit-01 单题内出现 10 次同参
 `audit_rule` 调用（模型刷遍规则表），被 `dup_calls` 指标显形。
 ```bash
 python3 run_agent.py --all --toolset audit --tasks-file evals/tasks-audit.jsonl --max-tokens 2048
