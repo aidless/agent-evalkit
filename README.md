@@ -1,4 +1,4 @@
-# agent-evalkit — 带评测门禁与全链路 trace 的 Tool-Calling Agent
+# aidless-agent-evalkit — 带评测门禁与全链路 trace 的 Tool-Calling Agent
 
 一个**零依赖**（Python 3.10+ 标准库）的 agent 演示项目：
 
@@ -24,6 +24,10 @@ run_eval.py ── 评分 + 失败归因 + 门禁 (gate 0.80, 退出码≠0 即�
 ## 快速开始
 
 ```bash
+# 安装（PyPI 在架包；或从 GitHub Release 取 wheel）
+pip install aidless-agent-evalkit
+python3 -c "from evalkit import tools; print(tools.calc('2+3*4'))"   # 14
+
 # 1. 跑全部评测任务（需要任意 OpenAI 兼容 API）
 export OPENAI_BASE_URL=http://127.0.0.1:3425/v1
 export OPENAI_API_KEY=sk-local

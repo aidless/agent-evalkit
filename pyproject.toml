@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent-evalkit"
+name = "aidless-agent-evalkit"
 version = "0.1.0"
 description = "Deterministic eval harness for tool-calling LLM agents: task sets, JSONL traces, failure attribution, fail-closed gates"
 readme = "README.md"
