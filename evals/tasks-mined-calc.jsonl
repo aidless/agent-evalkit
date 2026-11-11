@@ -1,0 +1,1 @@
+{"id": "mined-07", "prompt": "用 calc 工具计算 (7+1*((6+17)))（表达式先原样传给工具，再给结果）。只输出结果。", "expected_answer": "30", "required_tools": ["calc"], "category": "calc", "tool_args": {"expr": "(7+1*((6+17)))"}, "provenance": {"source_run": "20261110T092217Z", "source_task": "adv-05", "failure_type": "tool_error", "event_seq": 157, "source_prompt": "计算 ((((12+8)*5)-17)*3+9)/6，只输出结果。"}}

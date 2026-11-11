@@ -441,3 +441,234 @@ class TestAgentLlmFnContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestGatePolicy(unittest.TestCase):
+    """门禁阈值必须从历史无回归 run 推导，不许拍脑袋写 0.80。
+
+    规则（写死在 derive_gate.RULE）：threshold = (最低历史通过题数 - 安全余量) / 总题数。
+    语义：允许比历史最差再劣化「安全余量」条题；再劣化 1 条即阻断。
+    """
+
+    def _run(self, passed, total=36):
+        return {"passed": passed, "total": total, "pass_rate": passed / total}
+
+    def test_derive_from_baseline(self):
+        from derive_gate import derive_threshold
+
+        runs = [self._run(34), self._run(34), self._run(34), self._run(36), self._run(36)]
+        out = derive_threshold(runs, total_tasks=36, safety_tasks=1)
+        self.assertEqual(out["min_passed"], 34)
+        self.assertEqual(out["threshold"], 33 / 36)  # 0.9167
+        self.assertEqual(out["n_runs"], 5)
+
+    def test_safety_zero_is_strictest(self):
+        from derive_gate import derive_threshold
+
+        out = derive_threshold([self._run(34), self._run(36)], total_tasks=36, safety_tasks=0)
+        self.assertEqual(out["threshold"], 34 / 36)
+
+    def test_perfect_baseline(self):
+        from derive_gate import derive_threshold
+
+        out = derive_threshold([self._run(36), self._run(36)], total_tasks=36, safety_tasks=1)
+        self.assertEqual(out["threshold"], 35 / 36)
+
+    def test_threshold_blocks_one_more_failure(self):
+        """劣化到 32/36 必须阻断，33/36 放行——这是规则的可执行语义。"""
+        from derive_gate import derive_threshold
+        from evalkit.grade import evaluate_gate
+
+        th = derive_threshold([self._run(34), self._run(36)], total_tasks=36)["threshold"]
+        ok_33, _ = evaluate_gate(self._run(33), th)
+        ok_32, why = evaluate_gate(self._run(32), th)
+        self.assertTrue(ok_33)
+        self.assertFalse(ok_32)
+        self.assertIn("门禁", why)
+
+    def test_fail_closed_on_bad_input(self):
+        from derive_gate import derive_threshold
+
+        for bad in [[], [{"total": 36}], [{"passed": "34", "total": 36}], [{"passed": 34, "total": 24}]]:
+            with self.assertRaises(ValueError):
+                derive_threshold(bad, total_tasks=36)
+
+    def test_derive_from_files_records_inputs(self):
+        """落盘策略必须带每个输入 run 的通过数，任何人可重算。"""
+        import tempfile
+
+        from derive_gate import derive_from_files
+
+        with tempfile.TemporaryDirectory() as td:
+            paths = []
+            for i, passed in enumerate([34, 36]):
+                p = Path(td) / f"run-{i}.json"
+                p.write_text(json.dumps({"run_id": f"r{i}", "total_tasks": 36,
+                                         "results": [{"ok": True}] * passed +
+                                                    [{"ok": False}] * (36 - passed)}),
+                             encoding="utf-8")
+                paths.append(p)
+            out = derive_from_files(paths, total_tasks=36)
+        self.assertEqual(out["threshold"], 33 / 36)
+        self.assertEqual([r["passed"] for r in out["baseline_runs"]], [34, 36])
+
+
+class TestWatchAlert(unittest.TestCase):
+    """--watch 是监控接入点：每次评测都发一条记录，越线额外告警；投递失败 fail-closed。"""
+
+    def _failing_run_file(self, td: Path) -> Path:
+        src = Path(__file__).resolve().parents[1] / "results" / "run-gw5.json"
+        run = json.loads(src.read_text(encoding="utf-8"))
+        p = td / "run.json"
+        p.write_text(json.dumps(run, ensure_ascii=False), encoding="utf-8")
+        return p
+
+    def test_watch_posts_alert_and_writes_jsonl(self):
+        import http.server
+        import threading
+
+        received = []
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):
+                n = int(self.headers.get("Content-Length", 0))
+                received.append(json.loads(self.rfile.read(n)))
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"ok")
+
+            def log_message(self, *a):
+                pass
+
+        srv = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        port = srv.server_address[1]
+        try:
+            import run_eval
+
+            with tempfile.TemporaryDirectory() as td:
+                td = Path(td)
+                run_file = self._failing_run_file(td)
+                alerts = td / "alerts.jsonl"
+                argv = sys.argv
+                sys.argv = ["run_eval.py", "--replay", str(run_file), "--gate", "1.0",
+                            "--watch", "--alert-url", f"http://127.0.0.1:{port}/hook",
+                            "--alerts-file", str(alerts)]
+                try:
+                    rc = run_eval.main()
+                finally:
+                    sys.argv = argv
+                self.assertEqual(rc, 1)
+                self.assertEqual(len(received), 1, "webhook 必须真收到一次 POST")
+                self.assertAlmostEqual(received[0]["pass_rate"], 0.9444, places=4)
+                self.assertTrue(received[0]["blocked"])
+                lines = [json.loads(x) for x in alerts.read_text(encoding="utf-8").splitlines()]
+                self.assertEqual(len(lines), 1)
+                self.assertEqual(lines[0]["run_id"], received[0]["run_id"])
+        finally:
+            srv.shutdown()
+
+    def test_watch_delivery_failure_is_fail_closed(self):
+        import run_eval
+
+        with tempfile.TemporaryDirectory() as td:
+            td = Path(td)
+            run_file = self._failing_run_file(td)
+            argv = sys.argv
+            sys.argv = ["run_eval.py", "--replay", str(run_file), "--gate", "1.0",
+                        "--watch", "--alert-url", "http://127.0.0.1:1/hook",
+                        "--alerts-file", str(td / "alerts.jsonl")]
+            try:
+                rc = run_eval.main()
+            finally:
+                sys.argv = argv
+        self.assertEqual(rc, 2, "告警投递失败必须与门禁阻断（exit 1）区分")
+
+
+class TestMineFailures(unittest.TestCase):
+    """新题必须从真实失败长出：题干来自 trace 的失败实例，expected 由工具现算。"""
+
+    def _fixture(self, td: Path):
+        """造一个真失败的 run + trace：calc 括号未闭合 + audit 查错规则。"""
+        trace = td / "trace.jsonl"
+        events = [
+            {"task_id": "calc-x", "event": "tool_call", "turn": 1, "tool": "calc",
+             "arguments": {"expr": "((12+8)*5"}, "seq": 1},
+            {"task_id": "calc-x", "event": "tool_result", "turn": 1, "tool": "calc",
+             "result": "错误: calc 执行失败: '(' was never closed", "seq": 2},
+            {"task_id": "audit-x", "event": "tool_call", "turn": 1, "tool": "audit_rule",
+             "arguments": {"rule_id": "C3"}, "seq": 3},
+        ]
+        with trace.open("w", encoding="utf-8") as f:
+            for i, ev in enumerate(events):
+                ev.setdefault("ts", f"2026-11-11T00:00:0{i}Z")
+                f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+        run = td / "run.json"
+        run.write_text(json.dumps({
+            "run_id": "fixture-run", "trace_file": str(trace), "total_tasks": 2,
+            "results": [
+                {"task_id": "calc-x", "ok": False, "final_answer": None,
+                 "turns": 2, "tools_called": ["calc"], "error": "max_tokens 截断",
+                 "error_type": "orchestration_error"},
+                {"task_id": "audit-x", "ok": True, "final_answer": "C3",
+                 "turns": 2, "tools_called": ["audit_rule"]},
+            ]}, ensure_ascii=False), encoding="utf-8")
+        tasks = td / "tasks.jsonl"
+        with tasks.open("w", encoding="utf-8") as f:
+            f.write(json.dumps({"id": "calc-x", "prompt": "计算 ((12+8)*5",
+                                "expected_answer": "100", "required_tools": ["calc"],
+                                "category": "calc"}) + "\n")
+            f.write(json.dumps({"id": "audit-x", "prompt": "符号 R 未定义属于哪条规则",
+                                "expected_answer": "C1", "required_tools": ["audit_rule"],
+                                "category": "audit"}) + "\n")
+        return run, tasks, trace
+
+    def test_mined_task_expected_comes_from_tool(self):
+        from evalkit.audit_tools import RULES
+        from evalkit.tools import dispatch
+        from mine_failures import mine
+
+        with tempfile.TemporaryDirectory() as td:
+            td = Path(td)
+            run, tasks, trace = self._fixture(td)
+            out = mine([run], tasks_file=tasks, per_mode=2)
+        self.assertGreaterEqual(len(out["tasks"]), 2)
+        for t in out["tasks"]:
+            args = t["tool_args"]
+            if t["required_tools"] == ["calc"]:
+                self.assertEqual(t["expected_answer"], dispatch("calc", args),
+                                 f"expected 必须等于工具现算: {t['id']}")
+            else:  # audit 题的标准答案是「id 空格 层级」，必须由 RULES 推导
+                rule_id = args["rule_id"]
+                self.assertEqual(t["expected_answer"],
+                                 f"{rule_id} {RULES[rule_id]['evidence_tier']}")
+            self.assertIn("provenance", t)
+            self.assertTrue(t["provenance"]["source_task"])
+            self.assertTrue(t["provenance"]["failure_type"])
+        modes = {t["provenance"]["failure_type"] for t in out["tasks"]}
+        self.assertIn("tool_error", modes)
+        self.assertIn("wrong_answer", modes)
+
+    def test_audit_candidate_avoids_rules_already_queried(self):
+        from mine_failures import mine
+
+        with tempfile.TemporaryDirectory() as td:
+            td = Path(td)
+            run, tasks, trace = self._fixture(td)
+            out = mine([run], tasks_file=tasks, per_mode=2)
+        audit = [t for t in out["tasks"] if t["category"] == "audit"]
+        self.assertTrue(audit)
+        for t in audit:
+            self.assertNotEqual(t["tool_args"]["rule_id"], "C3",
+                                "已在源 trace 查过的规则不算新证据")
+
+    def test_empty_run_fails_closed(self):
+        from mine_failures import mine
+
+        with tempfile.TemporaryDirectory() as td:
+            td = Path(td)
+            run, tasks, _ = self._fixture(td)
+            bad = td / "bad.json"
+            bad.write_text(json.dumps({"run_id": "x", "results": []}), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                mine([bad], tasks_file=tasks)

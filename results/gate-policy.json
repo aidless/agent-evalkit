@@ -1,0 +1,146 @@
+{
+  "rule": "threshold = (最低历史通过题数 - safety_tasks) / total_tasks",
+  "by_total": {
+    "10": {
+      "rule": "threshold = (最低历史通过题数 - safety_tasks) / total_tasks",
+      "safety_tasks": 1,
+      "total_tasks": 10,
+      "min_passed": 10,
+      "threshold": 0.9,
+      "n_runs": 2,
+      "mean_pass_rate": 1.0,
+      "sd_pass_rate": 0.0,
+      "baseline_runs": [
+        {
+          "run_id": "20261110T090846Z",
+          "passed": 10,
+          "total": 10,
+          "pass_rate": 1.0
+        },
+        {
+          "run_id": "20261110T090940Z",
+          "passed": 10,
+          "total": 10,
+          "pass_rate": 1.0
+        }
+      ],
+      "inputs": [
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-audit-gw1.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-audit-gw2.json"
+      ]
+    },
+    "20": {
+      "rule": "threshold = (最低历史通过题数 - safety_tasks) / total_tasks",
+      "safety_tasks": 1,
+      "total_tasks": 20,
+      "min_passed": 20,
+      "threshold": 0.95,
+      "n_runs": 1,
+      "mean_pass_rate": 1.0,
+      "sd_pass_rate": 0.0,
+      "baseline_runs": [
+        {
+          "run_id": "20261110T103146Z",
+          "passed": 20,
+          "total": 20,
+          "pass_rate": 1.0
+        }
+      ],
+      "inputs": [
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-audit-gw3.json"
+      ]
+    },
+    "36": {
+      "rule": "threshold = (最低历史通过题数 - safety_tasks) / total_tasks",
+      "safety_tasks": 1,
+      "total_tasks": 36,
+      "min_passed": 34,
+      "threshold": 0.9166666666666666,
+      "n_runs": 11,
+      "mean_pass_rate": 0.9722,
+      "sd_pass_rate": 0.017582,
+      "baseline_runs": [
+        {
+          "run_id": "20261110T005737Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T012021Z",
+          "passed": 36,
+          "total": 36,
+          "pass_rate": 1.0
+        },
+        {
+          "run_id": "20261110T013405Z",
+          "passed": 34,
+          "total": 36,
+          "pass_rate": 0.9444
+        },
+        {
+          "run_id": "20261110T014630Z",
+          "passed": 36,
+          "total": 36,
+          "pass_rate": 1.0
+        },
+        {
+          "run_id": "20261110T015150Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T091819Z",
+          "passed": 34,
+          "total": 36,
+          "pass_rate": 0.9444
+        },
+        {
+          "run_id": "20261110T012023Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T013402Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T014632Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T015638Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        },
+        {
+          "run_id": "20261110T092217Z",
+          "passed": 35,
+          "total": 36,
+          "pass_rate": 0.9722
+        }
+      ],
+      "inputs": [
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw1.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw2.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw3.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw4.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw5.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-gw6.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-local1.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-local2.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-local3.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-local4.json",
+        "/home/liuzewen/F:\\deepseek/agent-evalkit/results/run-local6.json"
+      ]
+    }
+  },
+  "generated_at": "2026-11-11T05:25:47Z"
+}

@@ -5,6 +5,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -22,6 +25,56 @@ def build_report(run: dict, tasks_file=None) -> dict:
     report["model"] = run.get("model")
     report["eval_tasks_file"] = str(tasks_file or (ROOT / "evals" / "tasks.jsonl"))
     return report
+
+
+def policy_threshold(total_tasks: int) -> tuple[float | None, str]:
+    """从 derive_gate.py 产出的策略文件取阈值；缺文件/题数对不上返回 None（调用方 fail-closed）。"""
+    path = ROOT / "results" / "gate-policy.json"
+    if not path.exists():
+        return None, f"没有策略文件 {path}；先跑 python3 derive_gate.py"
+    try:
+        policy = json.loads(path.read_text(encoding="utf-8"))
+        bucket = policy.get("by_total", {}).get(str(total_tasks))
+        if bucket:
+            return float(bucket["threshold"]), f"来自 {path.name}（{total_tasks} 题桶，n={bucket['n_runs']}）"
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+        return None, f"策略文件损坏: {exc}"
+    return None, f"策略文件里没有 {total_tasks} 题的门禁；换 --gate 显式指定"
+
+
+def emit_watch(report: dict, threshold: float, ok: bool, why: str,
+               alerts_file: str, alert_url: str) -> int:
+    """监控接入点：每次评测写一条记录；越线打 ALERT；webhook 投递失败返回 2。"""
+    alert = {
+        "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "run_id": report.get("run_id"),
+        "model": report.get("model"),
+        "pass_rate": report["pass_rate"],
+        "passed": report["passed"],
+        "total": report["total"],
+        "threshold": round(threshold, 6),
+        "blocked": not ok,
+        "reason": why,
+        "failure_attribution": report.get("failure_attribution", {}),
+    }
+    path = Path(alerts_file)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(alert, ensure_ascii=False) + "\n")
+    if not ok:
+        print(f"ALERT {json.dumps(alert, ensure_ascii=False)}", file=sys.stderr)
+    if alert_url:
+        body = json.dumps(alert, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(alert_url, data=body,
+                                     headers={"Content-Type": "application/json"}, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                if not (200 <= resp.status < 300):
+                    raise urllib.error.HTTPError(alert_url, resp.status, "非 2xx", {}, None)
+        except Exception as exc:  # 投递失败必须显性，不能静默丢告警
+            print(f"ALERT_DELIVERY_FAILED {alert_url}: {exc}", file=sys.stderr)
+            return 2
+    return 0
 
 
 def selftest() -> int:
@@ -71,9 +124,15 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="评测门禁")
     ap.add_argument("--replay", default=str(ROOT / "results" / "latest.json"),
                     help="要评分的结果 JSON（默认 results/latest.json）")
-    ap.add_argument("--gate", type=float, default=0.80, help="通过率阈值，低于即 exit 1")
+    ap.add_argument("--gate", type=float, default=None,
+                    help="通过率阈值；缺省读 results/gate-policy.json（由 derive_gate.py 生成）")
     ap.add_argument("--selftest", action="store_true", help="门禁自检（RED→GREEN）")
     ap.add_argument("--json-out", help="把评分报告写到该 JSON 文件")
+    ap.add_argument("--watch", action="store_true",
+                    help="监控接入点：写 results/alerts.jsonl，越线打 ALERT，可选 webhook")
+    ap.add_argument("--alert-url", default="", help="告警 webhook（POST JSON，含 pass_rate/blocked/归因）")
+    ap.add_argument("--alerts-file", default=str(ROOT / "results" / "alerts.jsonl"),
+                    help="告警记录落盘路径（JSONL，每次评测一行）")
     ap.add_argument("--tasks-file", default=str(ROOT / "evals" / "tasks.jsonl"),
                     help="任务集路径；audit 任务集配 evals/tasks-audit.jsonl")
     args = ap.parse_args()
@@ -103,13 +162,26 @@ def main() -> int:
     if report["failure_attribution"]:
         print("失败归因:", json.dumps(report["failure_attribution"], ensure_ascii=False))
 
+    if args.gate is None:
+        threshold, source = policy_threshold(report["total"])
+        if threshold is None:
+            print(f"无法确定门禁阈值: {source}", file=sys.stderr)
+            return 2
+        print(f"门禁阈值 = {threshold:.4f}（{source}）")
+    else:
+        threshold = args.gate
+
     if args.json_out:
         Path(args.json_out).write_text(
             json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"report -> {args.json_out}")
 
-    ok, why = evaluate_gate(report, args.gate)
-    print(f"\nGATE {args.gate:.2f}: {'PASS' if ok else 'BLOCK'} — {why}")
+    ok, why = evaluate_gate(report, threshold)
+    print(f"\nGATE {threshold:.4f}: {'PASS' if ok else 'BLOCK'} — {why}")
+    if args.watch:
+        rc = emit_watch(report, threshold, ok, why, args.alerts_file, args.alert_url)
+        if rc != 0:
+            return rc
     return 0 if ok else 1
 
 

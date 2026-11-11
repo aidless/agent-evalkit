@@ -11,11 +11,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: 单测（工具安全 / 评分器）
+      - name: 单测（工具安全 / 评分器 / 门禁策略 / 告警）
         run: python3 tests/test_evalkit.py
       - name: 门禁自检 RED→GREEN
         run: python3 run_eval.py --selftest
-      - name: 回放评分 + 回归门禁
-        run: python3 run_eval.py --replay results/run-gw1.json --gate 0.80
+      - name: 阈值推导自检 + 从历史基线推导阈值
+        run: |
+          python3 derive_gate.py --selftest
+          python3 derive_gate.py
+      - name: 回放评分 + 回归门禁（阈值来自 gate-policy.json，不是写死的 0.80）
+        run: python3 run_eval.py --replay results/run-gw5.json
       - name: trace 摘要
         run: python3 trace_summary.py traces/

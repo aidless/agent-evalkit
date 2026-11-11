@@ -18,22 +18,23 @@
 evals/tasks.jsonl (36 题)          traces/run-*.jsonl (可回放)
    │                                    │
    ▼                                    ▼
-run_eval.py ── 评分 + 失败归因 + 门禁 (gate 0.80, 退出码≠0 即阻断)
+run_eval.py ── 评分 + 失败归因 + 门禁 (阈值由 derive_gate.py 推导，退出码≠0 即阻断)
 ```
 
 ## 快速开始
 
 ```bash
-# 安装：PyPI 在架包 / 直接装 GitHub 仓（无需等 Release）都行
-pip install aidless-agent-evalkit
-pip install git+https://github.com/aidless/agent-evalkit   # 同一模块，evalkit.*
+# 安装（60 秒可跑通的那条在前面：当前唯一确定可用）
+git clone https://github.com/aidless/agent-evalkit && cd agent-evalkit
+# 或 pip install git+https://github.com/aidless/agent-evalkit  → 同一模块 evalkit.*
+# PyPI 发行名 aidless-agent-evalkit 已打包（twine check 双 PASSED），
+# 但新账号上传撞 429 冷启动限流，上线前不要写 `pip install aidless-agent-evalkit`。
 
 python3 -c "from evalkit import tools; print(tools.calc('2+3*4'))"   # 14
 
 # 60 秒离线复现主表：单测 + 门禁自检 + 已录 run 的门禁复算（零网络零 GPU）
-pip install git+https://github.com/aidless/agent-evalkit && git clone https://github.com/aidless/agent-evalkit && cd agent-evalkit
 python3 -m unittest discover -s tests && python3 run_eval.py --selftest
-python3 run_eval.py --replay results/run-gw5.json --gate 0.80   # → GATE 0.80: PASS — pass_rate 0.9444
+python3 run_eval.py --replay results/run-gw5.json   # → GATE 0.9167: PASS — pass_rate 0.9444
 
 # 1. 跑全部评测任务（需要任意 OpenAI 兼容 API）
 export OPENAI_BASE_URL=http://127.0.0.1:3425/v1
@@ -43,8 +44,8 @@ export AGENT_MODEL=opencode-go/deepseek-v4.1-flash
 python3 run_agent.py --all                # 产出 traces/run-*.jsonl + results/latest.json
 
 # 2. 评分 + 门禁（对已录 trace 回放评分，不调 LLM，CI 可用）
-python3 run_eval.py --replay results/latest.json --gate 0.80
-#    门禁不过 → exit 1
+python3 run_eval.py --replay results/latest.json
+#    阈值缺省读 results/gate-policy.json 的 36 题桶 = 0.9167；门禁不过 → exit 1
 
 # 3. 观测摘要（吞吐/延迟分位/失败归因）
 python3 trace_summary.py "$TRACE_FILE"   # 或指定某一 run 的 trace 文件
@@ -52,7 +53,7 @@ python3 trace_summary.py "$TRACE_FILE"   # 或指定某一 run 的 trace 文件
 
 ## 门禁自检（RED→GREEN）
 
-门禁必须能失败，才算门禁：
+门禁必须能失败，才算门禁（自检里固定用 0.80 做夹具；生产阈值由 `derive_gate.py` 推导，见下节）：
 
 ```bash
 python3 run_eval.py --selftest
@@ -69,6 +70,43 @@ python3 run_eval.py --selftest
 
 真流量反证另跑一次（`--max-turns 1`，见下）。另外回放遇到损坏的结果 JSON 是 exit 2，
 和上面的「坏报告 fail-closed」是两层不同的防线。
+
+## 上生产怎么监控（阈值不是拍脑袋的 0.80）
+
+**阈值来源（`derive_gate.py`，规则唯一且可复算）**：
+`threshold = (最低历史通过题数 − safety_tasks) / total_tasks`，`safety_tasks=1`。
+语义是「允许比历史最差一次再多错 1 条题，再劣化就阻断」。按题数分桶，
+不让 10 题满分把 20/36 题的门禁抬高。当前 `results/gate-policy.json`：
+
+| 题数桶 | 基线 run 数 | 历史最低通过 | 阈值 |
+|---|---|---|---|
+| 36 | 11（网关 6 + 本地 5） | 34 | 0.9167（不四舍五入，落盘为 0.9166666…） |
+| 20 | 1 | 20 | 0.9500 |
+| 10 | 2 | 10 | 0.9000 |
+
+原来的 0.80 在 36 题下等于允许错 7 条，比历史最差（错 2 条）还多放 5 条——
+是装饰不是门禁。`run_eval.py` 缺省读桶值，**桶不存在 / 报告损坏一律 exit 2**
+（fail-closed）；显式 `--gate` 只用于复现历史实验。
+
+**告警接入（`--watch`）**：每次评测往 `results/alerts.jsonl` 追加一行
+（ts / run_id / model / pass_rate / passed / total / threshold / blocked /
+reason / failure_attribution），越线同时打 `ALERT {...}` 到 stderr；
+给 `--alert-url https://hooks.example/...` 则 POST 同一份 JSON。
+退出码三态：`0` 通过、`1` 门禁阻断、`2` 输入损坏或**告警投递失败**
+（`ALERT_DELIVERY_FAILED`，避免告警没送到却显示绿灯）。
+
+```bash
+# 发布流水线：跑 → 判 → 告警；CI 里把 ALERT_URL 设为 secret
+python3 run_agent.py --all --out results/latest.json
+python3 run_eval.py --replay results/latest.json --watch ${ALERT_URL:+--alert-url "$ALERT_URL"}
+# 基线变好/变多后重推阈值（CI 里的 eval-gate.yml 每次都会重跑这一步）
+python3 derive_gate.py --selftest && python3 derive_gate.py
+```
+
+**边界（别把它说成托管观测平台）**：没有存储后端、没有自动定时重跑、
+没有告警去重/升级、阈值是回归线不是 SLO。这层就是「一次评测 → 一条可追溯
+判定 → 一个可挂 webhook 的出口」；真正的调度交给 CI/cron，长期趋势交给
+`aggregate_runs.py`。面试里被问「上生产怎么监控」，答这条链 + 这三个缺口。
 
 ## 实测数字（2026-11-09–11-10，全部数字可由落盘结果重算）
 
@@ -108,8 +146,8 @@ python3 run_eval.py --selftest
 
 复现（评分与对照可离线重算）：
 ```bash
-python3 run_eval.py --replay results/run-gw3.json --gate 0.80   # 0.9444 PASS
-python3 run_eval.py --replay results/run-local2.json --gate 0.80  # 0.9722 PASS
+python3 run_eval.py --replay results/run-gw3.json     # 0.9444 PASS
+python3 run_eval.py --replay results/run-local2.json   # 0.9722 PASS
 python3 run_agent.py --all --model Qwen3-4B-AWQ --base-url http://127.0.0.1:8123/v1 \
     --api-key sk-local --max-tokens 2048 --out results/run-local-N.json
 python3 report_cost.py --results results/run-local4.json \
@@ -155,7 +193,7 @@ python3 report_cost.py --results results/run-local4.json \
     [docs/error-analysis-13.md](docs/error-analysis-13.md)。
 ```bash
 python3 run_agent.py --all --toolset audit --tasks-file evals/tasks-audit.jsonl --max-tokens 2048
-python3 run_eval.py --replay results/run-audit-gw1.json --tasks-file evals/tasks-audit.jsonl --gate 0.80
+python3 run_eval.py --replay results/run-audit-gw1.json --tasks-file evals/tasks-audit.jsonl
 ```
 
 ### mock-LLM 回放后端（harness 可测试性）
@@ -169,7 +207,7 @@ trace 相应升级：`llm_call` 事件新增 `tool_calls_full`（id/name/argumen
 旧 trace 无该字段时重放明确报错而不是静默失败。
 ```bash
 python3 run_agent.py --all --replay-trace results/replay-demo/trace-gw7-evidence.jsonl
-python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json --gate 0.80
+python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json
 ```
 
 ### prefix-cache 命中率（L3 最小件 + 一段两级归因弯路）
@@ -207,7 +245,16 @@ issue 已自答关闭（not_planned），完整复盘与教训见
 
 原始证据：`results/run-{gw3,gw4,gw5,local2,local3,local4}.json` + `traces/run-*.jsonl`（每 run 一条，
 结果 JSON 的 `trace_file` 字段指向对应轨迹）、`results/eval-cost-local4.json`、
-`results/v1-24q/`（v1 全套）。CI 离线复算：`python3 run_eval.py --replay results/run-gw5.json --gate 0.80`。
+`results/v1-24q/`（v1 全套）。CI 离线复算：`python3 run_eval.py --replay results/run-gw5.json`（v1 归档时阈值写死 0.80，现由策略文件推导）。
+
+## 评测集溯源：题从真实失败长出来
+
+`mine_failures.py` 从两个真实失败 run（本地 audit 13 条失败、`adv-05` 1 条）
+按四种失败模式挖出 7 道带 `provenance` 的新题，标准答案全部由 calc / RULES
+程序现算，`--selftest` 4/4。**结果是负结果**：网关与本地在 7 题上都 7/7——
+单步查表题恰好绕开了 4B 模型的真实缺口（多步链 / 思考预算 / 上下文溢出），
+所以它不是有效区分器。挖掘过程中还抓到一次「题面有歧义导致误判」的自身 defect。
+完整表格、失败模式计数、下一轮待办见 [`docs/evalset-provenance.md`](docs/evalset-provenance.md)。
 
 ## English abstract
 
