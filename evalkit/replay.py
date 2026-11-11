@@ -25,8 +25,8 @@ class ReplayLLM:
     """按 (task_id, 调用序) 重放 trace 中的 llm_call。
 
     与 Agent 的接缝：签名与 llm.chat_completions 相同的关键字接口，
-    Agent.__init__ 注入 llm_fn=self 即可。task_id 通过 Agent 每轮传入的
-    messages 不可得，改为 Agent 显式传 _replay_task_id（见 agent.py）。
+    Agent.__init__ 注入 llm_fn=self 即可；回放后端必须实现 set_task(task_id)
+    （Agent.run 开始时调用，切换重放游标），见 agent.py 的 llm_fn 契约说明。
     """
 
     def __init__(self, trace_path: str | pathlib.Path):
@@ -68,7 +68,10 @@ class ReplayLLM:
             for j, tc in enumerate(full or [])]
         return LLMResult(
             message={"role": "assistant",
-                     "content": ev.get("content"),
+                     # content_full 是 agent 落盘的全量原文；旧 trace 无此字段时
+                     # 只能降级用截断的 content（>300 字符答案的重放会失真，
+                     # 重跑该任务收集新 trace 才能恢复确定性）。
+                     "content": ev.get("content_full", ev.get("content")),
                      "tool_calls": tool_calls or None},
             latency_ms=ev.get("latency_ms", 0.0),
             attempts=1,

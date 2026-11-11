@@ -48,22 +48,21 @@ def grade_task(task: dict, result: dict) -> dict:
         failure_type = "loop_exceeded"
         reasons.append("超过最大轮次仍未给出最终答案")
     else:
+        # 归因是布尔运算，reasons 只是给人看的渲染层——不拿文案做字符串考古
         expected_tools = set(task.get("required_tools") or [])
-        called = set(result.get("tools_called") or [])
-        missing = expected_tools - called
+        missing = bool(expected_tools - set(result.get("tools_called") or []))
         if missing:
-            reasons.append(f"未调用必用工具: {sorted(missing)}")
+            reasons.append(f"未调用必用工具: {sorted(expected_tools - set(result.get('tools_called') or []))}")
         final = (result.get("final_answer") or "").strip()
+        answer_ok = bool(final) and answer_matches(str(task["expected_answer"]), final)
         if not final:
             reasons.append("没有产出最终答案")
-            if failure_type is None:
-                failure_type = "no_answer"
-        elif not answer_matches(str(task["expected_answer"]), final):
+            failure_type = "no_answer"
+        elif not answer_ok:
             reasons.append(f"答案不符: 期望 {task['expected_answer']!r}，实际 {final!r}")
-        if reasons and failure_type is None:
-            failure_type = "tool_missing" if missing else "wrong_answer"
-            if missing and any("答案不符" in r for r in reasons):
-                failure_type = "wrong_answer"
+            failure_type = "wrong_answer"
+        elif missing:
+            failure_type = "tool_missing"
 
     passed = failure_type is None
     return {

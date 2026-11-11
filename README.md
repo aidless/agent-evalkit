@@ -24,9 +24,16 @@ run_eval.py ── 评分 + 失败归因 + 门禁 (gate 0.80, 退出码≠0 即�
 ## 快速开始
 
 ```bash
-# 安装（PyPI 在架包；或从 GitHub Release 取 wheel）
+# 安装：PyPI 在架包 / 直接装 GitHub 仓（无需等 Release）都行
 pip install aidless-agent-evalkit
+pip install git+https://github.com/aidless/agent-evalkit   # 同一模块，evalkit.*
+
 python3 -c "from evalkit import tools; print(tools.calc('2+3*4'))"   # 14
+
+# 60 秒离线复现主表：单测 + 门禁自检 + 已录 run 的门禁复算（零网络零 GPU）
+pip install git+https://github.com/aidless/agent-evalkit && git clone https://github.com/aidless/agent-evalkit && cd agent-evalkit
+python3 -m unittest discover -s tests && python3 run_eval.py --selftest
+python3 run_eval.py --replay results/run-gw5.json --gate 0.80   # → GATE 0.80: PASS — pass_rate 0.9444
 
 # 1. 跑全部评测任务（需要任意 OpenAI 兼容 API）
 export OPENAI_BASE_URL=http://127.0.0.1:3425/v1
@@ -109,31 +116,20 @@ python3 report_cost.py --results results/run-local4.json \
     --power-csv <nvidia-smi 采样 csv> --wall-seconds 592.4
 ```
 
-### 失败驱动的修复闭环（2026-11-10，含一个诚实的负结果）
+### 失败驱动的修复闭环（2026-11-10）
 
-**闭环 1（成功）：跨后端实测 → 两个 harness 真 bug → RED→GREEN 修复 → 复评。**
-① 本地模型会发括号不平衡的表达式 `"(1+2"`，`SyntaxError` 逃出 dispatch 把任务打成
-orchestration_error → 包进 `ToolError` 回灌自纠（`TestDispatchSyntaxError`）；
-② 思考被 `max_tokens` 截断、无工具无答案的轮次，旧逻辑拿空串当最终答案 →
-新守卫判失败并注明原因（`TestAgentTruncatedTurn`）。修复后全量复评无回归。
+三个闭环，两个成功一个诚实的负结果（全文与三臂实验证据见
+[docs/failure-loop.md](docs/failure-loop.md)，证据落盘 `results/failure-loop/`）：
 
-**闭环 2（负结果，如实报告）：本地 `adv-05` 确定性失败，两臂修复均未奏效。**
-失败链（trace 逐事件，traces/run-20261110T092217Z.jsonl）：模型在思考里心算嵌套
-表达式（违反规则 1）→ 发出括号不平衡的 `calc("( (((12+8)*5)-17)*3+9)/6"` →
-工具报错回灌 → 模型继续在思考里重推整个表达式 → 2048 token 想完未闭合，
-被截断守卫判 orchestration_error（错误原文带 finish_reason=length）。
-- 基线（2048）：4/4 次全量同一处失败（run-local2/3/4/6）。
-- arm-B（system prompt 加「报错后一句反思立即重试」）：0/3，失败链相同。
-- arm-A（max_tokens 4096 放宽预算）：0/3，且更糟——思考在第一轮就不收敛，
-  连工具都没调用（turns=1, finish=length）。
-- **结论**：这是 4B 模型对「禁心算」指令遵循的能力边界，不是 harness 缺陷；
-  门禁的归因与守卫把失败定位到了确切一步（哪一轮、什么 finish_reason、
-  工具报错文本是什么）——修复闭环的价值在这里是**把「跑不过」变成可解释、
-  可复现、带证据链的失败**，而不是硬把它变绿。网关后端同一题 ×3 全过
-  （results/hard-x3/），对照进一步支持是模型能力而非任务缺陷。
-  三臂证据已落盘 `results/failure-loop/`（结果 JSON + 对应 trace），复现：
-  `ARMS="baseline armA armB" bash run_failure_arms.sh`（需本地 vLLM 服务；
-  脚本尾部的断言会在任一臂通过时报错，防止负结果陈述过期）。
+- **闭环 1（成功）**：跨后端实测暴露两个 harness 真 bug（SyntaxError 逃出 dispatch、
+  截断空转被当最终答案），RED→GREEN 修复，见上文 v2 节 ①②。
+- **闭环 2（负结果）**：本地 `adv-05` 同一失败链 4/4 复现（模型在思考里心算 →
+  畸形表达式 → 报错回灌 → 思考螺旋 2048 不闭合），两臂修复（prompt 反思重试、
+  max_tokens 4096）均 0/3——这是 4B 对「禁心算」的指令遵循边界，不是 harness 缺陷；
+  网关同题 ×3 全过佐证。价值=把「跑不过」变成可解释、可复现、带证据链的失败。
+- **闭环 3（评审驱动）**：外部评审命中 trace `content[:300]` 截断破坏 replay
+  确定性承诺 → `content_full` 全量落盘 + 回放优先取 full（`TestContentFullReplay`）。
+  复现：`ARMS="baseline armA armB" bash run_failure_arms.sh`。
 
 ### audit 工具集（evalkit × tmaudit，2026-11-10）
 
@@ -147,13 +143,16 @@ orchestration_error → 包进 `ToolError` 回灌自纠（`TestDispatchSyntaxErr
 | 后端 | 通过率 | 主要失败 |
 |---|---|---|
 | 网关 flash（×3） | **20/20 = 1.0000** | — |
-| 本地 Qwen3-4B-AWQ | **7/20 = 0.3500** | wrong_answer 8（多题把「规则归类」答成 C3 兜底）、思考截断 3（2048 想不完）、上下文溢出 1（prompt 2049 > max-model-len 2048）、超时 1 |
+| 本地 Qwen3-4B-AWQ | **7/20 = 0.3500** | wrong_answer 8（其中 7 条是查表后归类错、4 次兜底答 C3；1 条未查先答）、思考截断 3（2048 想不完）、上下文溢出 1（刷遍 10 条规则后 prompt 2049 > max-model-len 2048）、超时 1 |
 
     **audit 集比工具集区分度更高**（工具集本地 0.9722 vs audit 集 0.35）：
     规则语义题要求模型先查规则再精确归类，4B 在 2048 token 思考预算内做不到——
     这条失败链本身（api_error 400 上下文溢出）还指出了 KV cache 2,224 tokens
-    共存配置下 max-model-len 抬不高的部署约束。trace 纪律同样生效：audit-01 单题内出现 10 次同参
-`audit_rule` 调用（模型刷遍规则表），被 `dup_calls` 指标显形。
+    共存配置下 max-model-len 抬不高的部署约束。trace 纪律同样生效（含盲区）：
+    audit-07 单题内刷遍 10 条规则（10 次 audit_rule、参数各不相同）把上下文撑过
+    2048 直接 400——但 `dup_calls`（同 tool+同 args）读数为 0，**同参重复抓得住、
+    非必要全表浏览抓不住**。13 条本地失败的逐条标注（四类分型 + 逐条根因）见
+    [docs/error-analysis-13.md](docs/error-analysis-13.md)。
 ```bash
 python3 run_agent.py --all --toolset audit --tasks-file evals/tasks-audit.jsonl --max-tokens 2048
 python3 run_eval.py --replay results/run-audit-gw1.json --tasks-file evals/tasks-audit.jsonl --gate 0.80
@@ -181,27 +180,13 @@ python3 run_eval.py --replay results/replay-demo/run-gw7-evidence.json --gate 0.
 全量 36 题实测 **0.9178**（run-local6）——系统提示词 + 任务前缀被 KV cache
 大量复用，这是顺序评测能省 prefill 的量化证据。
 
-跟踪时曾把「单题冒烟计数器为 0」归因为 V1 引擎计数器未接线——**归因错误**：
-当时本地服务确实零流量（之前的 40+ 请求全部打到了网关），0 是正确读数，
-两次读数的差异是流量去向不是计数器。干净复现（fresh 服务 + 逐次请求）发现
-更大的问题：**字节相同的连续 prompt 也永不命中**（queries 增长、hits 恒 0，
-`/v1/completions` 与 `/v1/chat/completions` 皆然），已排除 spec
-`prefix_cacheable` 与 fine-grained 禁用告警两条路径；怀疑与 0.33 新引入的
-LBNHC KV cache layout 有关，已报上游
-[vllm#66786](https://github.com/vllm-project/vllm/issues/66786)。
-评测读数 0.9178 与该现象不冲突（评测 run 的系统提示词超过一个 block）。
-
-**2026-11-10 终局（在 venv 内给 `kv_cache_manager.get_computed_blocks` 打调试日志后定位）**：
-上游 issue 是**误报**。真相分两层——(1) 冒烟为 0 是流量归因错误（如上）；
-(2)「相同 prompt 永不命中」是因为那些复现 prompt 只有 13 tokens：`request_block_hasher`
-只哈希**完整 block**（`kv_cache_utils.py` 的 "We only hash full blocks"），而
-`get_computed_blocks` 在 prefill 调度时执行、早于 decode 延长请求——不足一个
-block 的 prompt 在 lookup 时 `block_hashes` 恒为空，永远不可能命中。这是
-block 粒度 prefix caching 的**设计行为**，与 LBNHC layout / FLASH_ATTN 无关。
-决定性实验（同一服务同一 layout）：~72 token 相同 prompt ×2，第二次命中
-**64 tokens**（命中率 89%）。issue 已自答并关闭
-[vllm#66786](https://github.com/vllm-project/vllm/issues/66786)（not_planned）。
-教训：报 bug 前先做「改变一个变量」的对照实验——长度就是那个变量。
+跟踪时走过一段两级归因弯路（冒烟 0 → 错怪计数器接线 → 错怪 LBNHC layout →
+提了 [vllm#66786](https://github.com/vllm-project/vllm/issues/66786) →
+最终定位为 block 粒度缓存的设计行为：不足 16-token 一个 block 的短 prompt
+没有 block_hashes，永不命中；72-token 相同 prompt 第二次命中 89%）。
+issue 已自答关闭（not_planned），完整复盘与教训见
+[docs/incident-66786.md](docs/incident-66786.md)——核心教训：报 bug 前先做
+「改变一个变量」的对照实验，长度就是那个变量。
 
 ### v1 评测集（24 题，2026-11-09，`--max-tokens 512`，已归档 `results/v1-24q/`）
 
@@ -230,14 +215,14 @@ agent-evalkit is a zero-dependency (Python stdlib only) tool-calling agent harne
 with a deterministic grader, a fail-closed eval gate, and per-event JSONL traces.
 36 tasks (24 basic + 12 adversarial/multi-step) run against two backends
 (a hosted deepseek-v4.1-flash and a local Qwen3-4B-AWQ served by vLLM with the
-Hermes tool-call parser). Three runs per backend: the hosted model scores
-0.9629 ± 0.0321 with run-to-run flakiness and 19 redundant tool calls,
-the local model 0.9722 ± 0.0000 with one deterministic failure and 1 redundant
-call. A full local eval costs ¥0.0051 of GPU electricity. Every number above is
+Hermes tool-call parser). Five gateway runs score 0.9666 ± 0.0272 with
+run-to-run flakiness; four local runs score 0.9722 ± 0.0000, failing the
+same task with the same failure chain every time. A full local eval costs
+¥0.0051 of GPU electricity. Every number above is
 recomputable offline from committed JSON results and traces.
 ## 设计取舍（为什么这套东西算 L2 而不是又一个 demo）
 
-1. **评分是确定性的，不请 LLM 当裁判**：24 题都有可机读的 `expected_answer`，
+1. **评分是确定性的，不请 LLM 当裁判**：36 题都有可机读的 `expected_answer`，
    数值题整数精确相等、浮点题给 1e-3 容差，字符串题只做大小写/空白归一化。
    `required_tools` 让「蒙对答案但没走工具」判失败 —— 评测的是 agent 行为，不是答案本身。
 2. **失败归因先于分数**：`api_error / orchestration_error > loop_exceeded > no_answer >
@@ -252,7 +237,7 @@ recomputable offline from committed JSON results and traces.
    加指数退避，工具执行错误统一包成 `ToolError` 回灌给模型自纠；工具层用 AST 白名单
    算表达式（`eval` 不进代码），量纲不同的单位拒绝换算。
 
-这套东西的边界也说清楚：24 题是单轮工具调用，不含多 agent 编排、长期记忆和沙箱隔离
+这套东西的边界也说清楚：36 题是单轮工具调用，不含多 agent 编排、长期记忆和沙箱隔离
 （那是 L3）；评测集小，pass_rate 满分只说明「这批任务没退化」，不能外推成能力结论。
 
 ## 目录
@@ -260,19 +245,28 @@ recomputable offline from committed JSON results and traces.
 ```
 evalkit/          核心包（零第三方依赖）
   llm.py          OpenAI 兼容客户端：超时、指数退避重试、usage 解析
-  tools.py        确定性工具集 + JSON Schema 注册表
-  agent.py        Agent 循环：消息 → 工具调用 → 最终答案，轮次上限
+  tools.py        确定性工具集 + JSON Schema 注册表 + dispatch_via 统一异常包装
+  audit_tools.py  audit 工具集（tmaudit 规则语义查询，10 条规则事实源）
+  agent.py        Agent 循环：消息 → 工具调用 → 最终答案，轮次上限/截断守卫
+  replay.py       mock-LLM 回放后端（按 trace 重放，无 LLM 无 GPU 跑全链）
+  metrics.py      vLLM /metrics 抓取 + prefix-cache 命中率差值
   trace.py        JSONL trace 写入 + 事件模型
-  grade.py        评分（数值容差/归一化字符串）+ 失败归因
+  grade.py        评分（数值容差/归一化字符串）+ 布尔失败归因
 evals/
-  tasks.jsonl     24 题：8 calc / 8 lookup / 4 convert / 4 multi-step
+  tasks.jsonl     36 题：24 基础（8 calc / 8 lookup / 4 convert / 4 multi）
+                  + 12 hard（对抗/多步）
+  tasks-audit.jsonl 20 题 audit 工具集场景（--toolset audit）
   corpus.json     lookup 工具的冻结事实库
+docs/             复盘与叙事：incident-66786 / failure-loop / error-analysis-13 /
+                  interview-walkthrough / mock-interview / trace-timeline.html
 run_agent.py      跑单题/全部 → traces + results/latest.json
 run_eval.py       回放评分 + --gate 门禁 + --selftest
+report_cost.py    从结果 JSON + 功率采样折电费成本
+run_failure_arms.sh 负结果三臂复现脚本（尾部断言防止陈述过期）
 trace_summary.py  聚合：延迟分位/token/工具分布/轮次/冗余调用 + 评分对账
 trace_timeline.py 单文件 HTML 时间线（每任务一泳道，蓝条宽=LLM latency、
                   红线=error；零依赖，浏览器直开）：
                   python3 trace_timeline.py traces/run-*.jsonl --out docs/trace-timeline.html
 aggregate_runs.py 多次运行的通过率 mean/sd + 延迟分位汇总
-tests/            22 个单测（工具/评分器/trace 指标/自检分母）
+tests/            52 个单测（工具/评分器/trace 指标/归因矩阵/回放契约）
 ```

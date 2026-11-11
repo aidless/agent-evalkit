@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from evalkit.agent import strip_thinking
 from evalkit.grade import answer_matches, evaluate_gate, grade_task
-from evalkit.tools import ToolError, calc, convert, dispatch, lookup
+from evalkit.tools import ToolError, calc, convert, dispatch, dispatch_via, lookup
 from trace_summary import aggregate
 
 
@@ -320,6 +320,123 @@ vllm:prefix_cache_hits_created{engine="0",model_name="Qwen3-4B-AWQ"} 1.79e+09
         self.assertIsNone(parse_metric(self.PROM, "vllm:nope_total"))
         # created 后缀同名指标不许误读
         self.assertIsNone(parse_metric(self.PROM, "vllm:prefix_cache_queries_created_total"))
+
+
+class TestContentFullReplay(unittest.TestCase):
+    """Carmack 命中的真缺陷：trace 落盘 content[:300] 截断，回放拿截断 content 重放，
+    答案 >300 字符的任务 replay 评分与原 run 必然不一致——确定性承诺是假的。
+    修复后：trace 存 content_full（全量），replay 优先取 full，旧 trace 降级截断。"""
+
+    LONG_ANSWER = "最终答案：vLLM 三档并发实测 " + "数字很长的结论句子。" * 30  # >300 字符
+
+    def _fake_llm(self):
+        from evalkit.llm import LLMResult
+        return LLMResult(
+            message={"role": "assistant", "content": self.LONG_ANSWER, "tool_calls": None},
+            latency_ms=1.0, attempts=1, prompt_tokens=10, completion_tokens=50,
+            total_tokens=60, cost=0.0, finish_reason="stop")
+
+    def test_trace_stores_full_and_display_content(self):
+        import unittest.mock as mock
+        import evalkit.agent as agent_mod
+        from evalkit.trace import TraceWriter, read_events
+        with mock.patch.object(agent_mod, "chat_completions", return_value=self._fake_llm()):
+            a = agent_mod.Agent(model="m", base_url="http://x", api_key="k")
+            with tempfile.TemporaryDirectory() as td:
+                tp = str(Path(td) / "t.jsonl")
+                tw = TraceWriter(tp)
+                r = a.run({"id": "t1", "prompt": "x", "expected_answer": self.LONG_ANSWER,
+                           "required_tools": []}, tw)
+                evs = [e for e in read_events(tp) if e["event"] == "llm_call"]
+        self.assertTrue(r.ok)
+        self.assertEqual(len(evs), 1)
+        self.assertEqual(evs[0].get("content_full"), self.LONG_ANSWER)   # 全量，可重放
+        self.assertEqual(evs[0]["content"], self.LONG_ANSWER[:300])      # 展示字段仍截断
+
+    def test_replay_long_answer_matches_original(self):
+        import unittest.mock as mock
+        import evalkit.agent as agent_mod
+        from evalkit.trace import TraceWriter
+        from evalkit.replay import ReplayLLM
+        task = {"id": "t1", "prompt": "x", "expected_answer": self.LONG_ANSWER,
+                "required_tools": []}
+        with tempfile.TemporaryDirectory() as td:
+            tp = str(Path(td) / "t.jsonl")
+            tw = TraceWriter(tp)
+            with mock.patch.object(agent_mod, "chat_completions", return_value=self._fake_llm()):
+                r1 = agent_mod.Agent(model="m", base_url="http://x", api_key="k").run(task, tw)
+            # 回放：不碰网络，重放同一条 trace
+            r2 = agent_mod.Agent(model="m", base_url="http://x", api_key="k",
+                                 llm_fn=ReplayLLM(tp)).run(task, tw)
+        self.assertTrue(r1.ok)
+        self.assertTrue(r2.ok)
+        self.assertEqual(r1.final_answer, r2.final_answer)   # 截断 bug 在这里必现
+
+
+class TestDispatchViaRegistry(unittest.TestCase):
+    """Linus 命中：dispatch_via 收了 table 参数却在错误路径写死全局 IMPLEMENTATIONS，
+    audit 工具集未知工具时会报出 calc/lookup/convert 可用——骗模型。"""
+
+    def test_unknown_tool_lists_table_not_global(self):
+        table = {"audit_rule": lambda rule_id: "ok"}
+        with self.assertRaises(ToolError) as cm:
+            dispatch_via(table, "nope", {})
+        self.assertIn("audit_rule", str(cm.exception))
+        self.assertNotIn("calc", str(cm.exception))
+
+
+class TestGradeAttributionMatrix(unittest.TestCase):
+    """grade_task 归因重构（字符串匹配 → 布尔推导）前先钉死 2×2 行为，防静默漂移。"""
+
+    def setUp(self):
+        self.task = {"id": "t1", "expected_answer": "4717", "required_tools": ["calc"]}
+
+    def _grade(self, tools_called, final_answer):
+        return grade_task(self.task, {"final_answer": final_answer,
+                                      "tools_called": tools_called, "turns": 2,
+                                      "error_type": None})
+
+    def test_missing_and_wrong_is_wrong_answer(self):
+        self.assertEqual(self._grade([], "4716")["failure_type"], "wrong_answer")
+
+    def test_missing_and_correct_is_tool_missing(self):
+        self.assertEqual(self._grade([], "4717")["failure_type"], "tool_missing")
+
+    def test_missing_and_no_answer_is_no_answer(self):
+        self.assertEqual(self._grade([], "")["failure_type"], "no_answer")
+
+    def test_called_and_wrong_is_wrong_answer(self):
+        self.assertEqual(self._grade(["calc"], "4716")["failure_type"], "wrong_answer")
+
+
+class TestAgentLlmFnContract(unittest.TestCase):
+    """Karpathy 命中：llm_fn 隐式契约必须写进 docstring，且文档不能指向不存在的机制。"""
+
+    def test_agent_docstring_documents_set_task(self):
+        import evalkit.agent as agent_mod
+        self.assertIn("set_task", (agent_mod.Agent.__doc__ or ""))
+
+    def test_replay_docstring_points_to_set_task(self):
+        from evalkit.replay import ReplayLLM
+        self.assertIn("set_task", (ReplayLLM.__doc__ or ""))
+        self.assertNotIn("_replay_task_id", ReplayLLM.__doc__ or "")
+
+    def test_plain_llm_fn_without_set_task_works(self):
+        import unittest.mock as mock
+        import evalkit.agent as agent_mod
+        from evalkit.trace import TraceWriter
+        from evalkit.llm import LLMResult
+        stub = LLMResult(message={"role": "assistant", "content": "42", "tool_calls": None},
+                         latency_ms=1.0, attempts=1, prompt_tokens=10, completion_tokens=2,
+                         total_tokens=12, cost=0.0, finish_reason="stop")
+        fn = lambda **kwargs: stub  # 无 set_task 属性的普通函数 = 非回放后端
+        with tempfile.TemporaryDirectory() as td:
+            tw = TraceWriter(str(Path(td) / "t.jsonl"))
+            r = agent_mod.Agent(model="m", base_url="http://x", api_key="k",
+                                llm_fn=fn).run(
+                {"id": "t1", "prompt": "x", "expected_answer": "42", "required_tools": []}, tw)
+        self.assertTrue(r.ok)
+        self.assertEqual(r.final_answer, "42")
 
 
 if __name__ == "__main__":

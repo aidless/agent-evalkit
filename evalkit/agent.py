@@ -64,6 +64,15 @@ def _toolset(toolset: str):
 
 
 class Agent:
+    """单任务 agent 循环（LLM → 工具 → 回灌 → 收尾）。
+
+    llm_fn 契约：None = 默认用 evalkit.llm.chat_completions；也可注入任何
+    「关键字签名与 chat_completions 相同」的可调用对象（如回放后端
+    evalkit.replay.ReplayLLM）。若注入的是回放后端，必须实现
+    set_task(task_id)（Agent.run 开始时调用以切换重放游标）——通过
+    hasattr(set_task) 探测，普通函数/桩不需要有。
+    """
+
     def __init__(
         self,
         *,
@@ -136,6 +145,9 @@ class Agent:
                          "arguments": tc["function"]["arguments"]}
                         for tc in (llm.message.get("tool_calls") or [])],
                     content=(llm.message.get("content") or "")[:300],
+                    # 全量 content：回放后端（ReplayLLM）靠它保证 >300 字符答案
+                    # 的确定性重放；[:300] 的 content 只是给人看的展示字段。
+                    content_full=llm.message.get("content") or "",
                 )
 
                 tool_calls = llm.message.get("tool_calls") or []

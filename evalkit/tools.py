@@ -117,7 +117,7 @@ def dispatch_via(table: dict, name: str, arguments: dict) -> str:
     """按给定注册表执行工具；任何异常都转成给模型看的结构化错误文本。"""
     fn = table.get(name)
     if fn is None:
-        raise ToolError(f"未知工具 {name!r}；可用工具: {', '.join(sorted(IMPLEMENTATIONS))}")
+        raise ToolError(f"未知工具 {name!r}；可用工具: {', '.join(sorted(table))}")
     try:
         return fn(**arguments)
     # SyntaxError 也要接：模型会发来括号不平衡的表达式，ast.parse 直接抛
