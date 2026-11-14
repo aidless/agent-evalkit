@@ -39,7 +39,7 @@ jobs:
       id-token: write   # PyPI Trusted Publishing（OIDC，无需 token）
     environment: pypi
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
