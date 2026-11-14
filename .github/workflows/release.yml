@@ -23,7 +23,7 @@ jobs:
           pip install dist/*.whl
           python -c "from evalkit.tools import dispatch, TOOL_SCHEMAS; from evalkit.grade import evaluate_gate; print('tools:', len(TOOL_SCHEMAS), 'schemas')"
           python -m unittest discover -s tests 2>&1 | tail -2
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
