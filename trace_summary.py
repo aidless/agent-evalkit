@@ -95,17 +95,17 @@ def main() -> int:
     avg_tools = statistics.mean(t["tool_calls"] for t in per_task.values()) if per_task else 0
 
     print(f"trace 文件: {len(files)} 个，事件 {n_events} 条，任务 {n_tasks} 个")
-    print(f"\n== LLM 延迟 (ms) ==")
+    print("\n== LLM 延迟 (ms) ==")
     print(f"  n={len(latencies)}  p50={percentile(latencies,50):.0f}  "
           f"p95={percentile(latencies,95):.0f}  p99={percentile(latencies,99):.0f}  "
           f"max={max(latencies):.0f}" if latencies else "  无 llm_call 事件")
-    print(f"\n== Token 用量 ==")
+    print("\n== Token 用量 ==")
     print(f"  prompt={total_prompt}  completion={total_completion}  total={total_prompt+total_completion}")
     print(f"  cost(网关计)={total_cost:.6f}")
-    print(f"\n== 工具调用分布 ==")
+    print("\n== 工具调用分布 ==")
     for name, cnt in tool_counter.most_common():
         print(f"  {name:<8} x{cnt}")
-    print(f"\n== 任务行为 ==")
+    print("\n== 任务行为 ==")
     print(f"  平均轮次 {avg_turns:.2f}  平均工具调用 {avg_tools:.2f}/任务  "
           f"错误任务 {sum(1 for t in per_task.values() if t['errors'])}")
     dup_total = sum(t["dup_calls"] for t in per_task.values())

@@ -28,7 +28,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from evalkit.audit_tools import RULES
-from evalkit.grade import grade_all, grade_task
+from evalkit.grade import grade_all
 from evalkit.tools import ToolError, calc
 
 ROOT = Path(__file__).resolve().parent

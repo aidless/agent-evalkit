@@ -422,7 +422,6 @@ class TestAgentLlmFnContract(unittest.TestCase):
         self.assertNotIn("_replay_task_id", ReplayLLM.__doc__ or "")
 
     def test_plain_llm_fn_without_set_task_works(self):
-        import unittest.mock as mock
         import evalkit.agent as agent_mod
         from evalkit.trace import TraceWriter
         from evalkit.llm import LLMResult
